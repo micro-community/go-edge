@@ -1,2 +1,2 @@
 # go-edge
-edge framework for device connections base on go-micro
+edge framework for device connections modified from go-micro
