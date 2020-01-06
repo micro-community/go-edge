@@ -1,2 +1,4 @@
 # go-edge
-edge framework for device connections modified from go-micro
+Edge framework for device connections modified from go-micro.
+It supports the tcp and udp. 
+

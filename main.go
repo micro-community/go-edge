@@ -1,0 +1,86 @@
+package main
+
+import (
+	"os"
+	"github.com/micro/cli"
+	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/util/log"
+	"github.com/micro-community/x-micro-edge/broker"
+	"github.com/micro-community/x-micro-edge/config"
+	"github.com/micro-community/x-micro-edge/handler"
+	protocol "github.com/micro-community/x-micro-edge/proto/protocol"
+	_ "github.com/micro-community/x-micro-edge/subscriber"
+)
+
+const XEDGEADDR = "XMicroEdgeServiceAddr"
+const XEDGETRANSPORT = "XMicroEdgeServiceTransport"
+
+func main() {
+	// New Service
+	service := micro.NewService(
+		//Select transport protocol (eg:tcp or udp) for XMicroEdgeService
+		micro.Flags(cli.StringFlag{
+			Name:  "XMicroEdgeServiceTransport",
+			Usage: "tcp",
+			EnvVar: XEDGETRANSPORT,
+			//Value: "tcp"
+			Value: "ppp",
+		}),
+		//Set address for XMicroEdgeService 192.168.1.198:6600
+		micro.Flags(cli.StringFlag{
+			Name:  "XMicroEdgeServiceAddr",
+			Usage: "format: 127.0.0.1:6600",
+			EnvVar: XEDGEADDR,
+			//Value:  "192.168.1.198:6600",
+			Value:  "192.168.1.198:1234",
+		}),
+	)
+
+	// Initialise service
+	service.Init(
+		micro.Action(func(c *cli.Context) {
+			if info := c.String("XMicroEdgeServiceTransport"); info != "" {
+				log.Log("XMicroEdgeServiceTransport:", info)
+				config.XMicroEdgeServiceTransport = info
+			} else {
+				if env := os.Getenv(XEDGETRANSPORT); len(env) > 0 {
+					log.Log(XEDGETRANSPORT, ":", env)
+					config.XMicroEdgeServiceTransport = env
+				} else {
+					log.Log("default XMicroEdgeServiceTransport is tcp")
+				}
+			}
+
+			if info := c.String("XMicroEdgeServiceAddr"); info != "" {
+				log.Log("XMicroEdgeServiceAddr:", info)
+				config.XMicroEdgeServiceAddr = info
+			} else {
+				if env := os.Getenv(XEDGEADDR); len(env) > 0 {
+					log.Log(XEDGEADDR, ":", env)
+					config.XMicroEdgeServiceAddr = env
+				} else {
+					log.Log("default XMicroEdgeServiceAddr is 192.168.1.198:6600")
+				}
+			}
+		}),
+	)
+
+	// Register Handler
+	protocol.RegisterProtocolHandler(service.Server(), new(handler.Protocol))
+
+	// Register Subscriber
+	//eventbroker.RegisterMessageSubscriber(service)
+
+	// Register Publisher
+	eventbroker.RegisterMessagePublisher(service)
+
+	//run the second listening service， you could set the args in config
+	//config.XMicroEdgeServiceTransport
+	//config.XMicroEdgeServiceAddr
+	start()
+
+	// Run service
+	if err := service.Run(); err != nil {
+		log.Fatal(err)
+	}
+}
