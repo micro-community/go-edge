@@ -2,6 +2,7 @@ package edge
 
 import (
 	"fmt"
+
 	esrv "github.com/micro-community/x-edge/end/server"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
@@ -35,7 +36,7 @@ func RunProc() {
 		),
 	)
 
-	service.Init()
+	//service.Init()
 
 	//register server message router
 	router.RegisterProtocolHandler(svr, new(router.ProtocolServer))
