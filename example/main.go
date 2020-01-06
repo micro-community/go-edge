@@ -2,17 +2,22 @@ package main
 
 import (
 	"os"
+
+	edge "github.com/micro-community/x-edge"
+	eventbroker "github.com/micro-community/x-edge/broker"
+	"github.com/micro-community/x-edge/config"
+	"github.com/micro-community/x-edge/handler"
+	protocol "github.com/micro-community/x-edge/proto/protocol"
+	_ "github.com/micro-community/x-edge/subscriber"
 	"github.com/micro/cli"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/util/log"
-	"github.com/micro-community/x-micro-edge/broker"
-	"github.com/micro-community/x-micro-edge/config"
-	"github.com/micro-community/x-micro-edge/handler"
-	protocol "github.com/micro-community/x-micro-edge/proto/protocol"
-	_ "github.com/micro-community/x-micro-edge/subscriber"
 )
 
+//XEDGEADDR for target edge address
 const XEDGEADDR = "XMicroEdgeServiceAddr"
+
+//XEDGETRANSPORT for target edge port
 const XEDGETRANSPORT = "XMicroEdgeServiceTransport"
 
 func main() {
@@ -20,19 +25,19 @@ func main() {
 	service := micro.NewService(
 		//Select transport protocol (eg:tcp or udp) for XMicroEdgeService
 		micro.Flags(cli.StringFlag{
-			Name:  "XMicroEdgeServiceTransport",
-			Usage: "tcp",
+			Name:   "XMicroEdgeServiceTransport",
+			Usage:  "tcp",
 			EnvVar: XEDGETRANSPORT,
 			//Value: "tcp"
 			Value: "ppp",
 		}),
 		//Set address for XMicroEdgeService 192.168.1.198:6600
 		micro.Flags(cli.StringFlag{
-			Name:  "XMicroEdgeServiceAddr",
-			Usage: "format: 127.0.0.1:6600",
+			Name:   "XMicroEdgeServiceAddr",
+			Usage:  "format: 127.0.0.1:6600",
 			EnvVar: XEDGEADDR,
 			//Value:  "192.168.1.198:6600",
-			Value:  "192.168.1.198:1234",
+			Value: "192.168.1.198:1234",
 		}),
 	)
 
@@ -77,7 +82,8 @@ func main() {
 	//run the second listening service， you could set the args in config
 	//config.XMicroEdgeServiceTransport
 	//config.XMicroEdgeServiceAddr
-	start()
+
+	edge.RunProc()
 
 	// Run service
 	if err := service.Run(); err != nil {

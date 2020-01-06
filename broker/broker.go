@@ -3,9 +3,9 @@ package eventbroker
 import (
 	"context"
 
-	"github.com/micro-community/x-micro-edge/config"
-	"github.com/micro-community/x-micro-edge/proto/protocol"
-	"github.com/micro-community/x-micro-edge/subscriber"
+	"github.com/micro-community/x-edge/config"
+	"github.com/micro-community/x-edge/proto/protocol"
+	"github.com/micro-community/x-edge/subscriber"
 	"github.com/micro/go-micro"
 )
 

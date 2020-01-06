@@ -1,8 +1,8 @@
 package client
 
 import (
-	xmlc "github.com/micro-community/x-micro-edge/end/codec"
-	"github.com/micro-community/x-micro-edge/end/iobuffer"
+	xmlc "github.com/micro-community/x-edge/end/codec"
+	"github.com/micro-community/x-edge/end/iobuffer"
 	"github.com/micro/go-micro/codec"
 	raw "github.com/micro/go-micro/codec/bytes"
 	"github.com/micro/go-micro/errors"

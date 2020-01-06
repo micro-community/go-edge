@@ -5,7 +5,7 @@ import (
 
 	"github.com/micro/go-micro/util/log"
 
-	protocol "github.com/micro-community/x-micro-edge/proto/protocol"
+	protocol "github.com/micro-community/x-edge/proto/protocol"
 )
 
 type Protocol struct{}

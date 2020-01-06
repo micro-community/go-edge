@@ -9,8 +9,8 @@ import (
 	"github.com/micro/go-micro/codec"
 	"github.com/micro/go-micro/util/log"
 
-	eventbroker "github.com/micro-community/x-micro-edge/broker"
-	protocol "github.com/micro-community/x-micro-edge/proto/protocol"
+	eventbroker "github.com/micro-community/x-edge/broker"
+	protocol "github.com/micro-community/x-edge/proto/protocol"
 )
 
 type ProtocolPackge struct {

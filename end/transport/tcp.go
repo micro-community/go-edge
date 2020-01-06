@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	udp "github.com/micro-community/x-micro-edge/end/transport/udp"
+	udp "github.com/micro-community/x-edge/end/transport/udp"
 	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
 	ts "github.com/micro/go-micro/transport"

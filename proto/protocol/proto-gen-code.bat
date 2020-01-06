@@ -5,7 +5,7 @@ color 0D
 @rem cls
 
 setlocal
-echo Copyright 2019 ess authors.
+echo Copyright 2019 micro-community authors.
 echo Generate the Go code for .proto files
 echo @rem choco install -y protoc
 echo @rem  go get -v -u github.com/micro/protoc-gen-micro

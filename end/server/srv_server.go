@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	xmlc "github.com/micro-community/x-micro-edge/end/codec"
+	xmlc "github.com/micro-community/x-edge/end/codec"
 
 	"github.com/micro/go-micro/codec"
 	"github.com/micro/go-micro/metadata"

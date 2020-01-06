@@ -2,19 +2,19 @@ package controller
 
 import (
 	"fmt"
-	esrv "github.com/micro-community/x-micro-edge/end/server"
+	esrv "github.com/micro-community/x-edge/end/server"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
 
-	"github.com/micro-community/x-micro-edge/config"
-	"github.com/micro-community/x-micro-edge/end/router"
-	ts "github.com/micro-community/x-micro-edge/end/transport"
+	"github.com/micro-community/x-edge/config"
+	"github.com/micro-community/x-edge/end/router"
+	ts "github.com/micro-community/x-edge/end/transport"
 )
 
 const XEDGEADDR = "XMicroEdgeServiceAddr"
 const XEDGETRANSPORT = "XMicroEdgeServiceTransport"
 
-//RunProc Listen the Controller
+//RunProc Listen to The Device Edge Server (Gateway、Controller etc)
 func RunProc() {
 
 	r := esrv.DefaultRouter()

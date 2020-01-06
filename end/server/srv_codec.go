@@ -6,7 +6,7 @@ import (
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/transport"
 	"github.com/micro/go-micro/util/socket"
-	"github.com/micro-community/x-micro-edge/end/iobuffer"
+	"github.com/micro-community/x-edge/end/iobuffer"
 )
 
 type codecBuffer struct {
