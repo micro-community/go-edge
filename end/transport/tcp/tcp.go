@@ -1,18 +1,16 @@
 //Package transport provides a TCP transport
-package transport
+package tcp
 
 import (
 	"bufio"
 	"crypto/tls"
 	"errors"
 	"net"
-	"strings"
 	"time"
 
-	udp "github.com/micro-community/x-edge/end/transport/udp"
+	ext "github.com/micro-community/x-edge/end/transport/extractor"
 	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
-	ts "github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
 	"github.com/micro/go-micro/util/log"
 	mnet "github.com/micro/go-micro/util/net"
@@ -83,7 +81,7 @@ func (t *tcpTransportClient) Recv(m *transport.Message) error {
 	}
 
 	scanner := bufio.NewScanner(t.conn)
-	scanner.Split(dataExtractor)
+	scanner.Split(ext.DataExtractor)
 
 	if scanner.Scan() {
 		m.Body = scanner.Bytes()
@@ -118,13 +116,12 @@ func (t *tcpTransportSocket) Recv(m *transport.Message) error {
 	//替代NEWScanner的错误
 	//scanner disconnected的错误
 	scanner := bufio.NewScanner(t.conn)
-	scanner.Split(dataExtractor)
+	scanner.Split(ext.DataExtractor)
 
 	if scanner.Scan() {
 		m.Body = scanner.Bytes()
 		return nil
 	}
-
 	return errorTransportDataExtract
 }
 
@@ -316,14 +313,4 @@ func NewTransport(opts ...transport.Option) transport.Transport {
 		o(&options)
 	}
 	return &tcpTransport{opts: options}
-}
-
-func CreateTransport(name string) ts.Transport {
-	str := strings.ToLower(name)
-	if str == "udp" {
-		return udp.NewTransport()
-	} else {
-		return NewTransport()
-	}
-
 }

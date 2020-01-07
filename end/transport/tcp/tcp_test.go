@@ -1,5 +1,4 @@
-//package transport
-package transport
+package tcp
 
 import (
 	"io"

@@ -1,4 +1,4 @@
-package transport
+package extractor
 
 import (
 	"regexp"
@@ -7,7 +7,7 @@ import (
 var minDataPakckageLenth = 50
 
 //extract data pakcage
-func dataExtractor(data []byte, atEOF bool) (advance int, token []byte, err error) {
+func DataExtractor(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 	if atEOF || len(data) == 0 {
 		return 0, nil, nil
