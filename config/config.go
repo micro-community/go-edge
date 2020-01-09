@@ -1,5 +1,12 @@
 package config
 
+import (
+	"fmt"
+
+	mconfig "github.com/micro/go-micro/config"
+	"github.com/micro/go-micro/config/source/file"
+)
+
 //Sevice configuration and register
 const (
 	//RegisterTTL Time
@@ -21,3 +28,55 @@ var XMicroEdgeServiceTransport = "tcp"
 
 //XMicroEdge ip Addr
 var XMicroEdgeServiceAddr = "192.168.1.198:6600"
+
+//Database define our own Database Config
+type Database struct {
+	Address string `toml:"address"`
+	Port    int    `toml:"port"`
+}
+
+//Cache define our own Cache Config
+type Cache struct {
+	Database
+}
+
+//MicroSets define our own Micro Config
+type MicroSets struct {
+	MicroServerName       string `toml:"microservername"`
+	MicroServerAddress    string `toml:"microserveraddress"`
+	MicroRegisterTTL      int    `toml:"microregisterttl"`
+	MicroRegisterInterval int    `toml:"microregisterinterval"`
+}
+
+//Config From filea
+var (
+	DBConfig    Database
+	CacheConfig Cache
+	MicroConfig MicroSets
+)
+
+func init() {
+
+	// load the config from a file source
+	if err := mconfig.Load(file.NewSource(file.WithPath("./config.toml"))); err != nil {
+		fmt.Println(err)
+	}
+
+	// read a Micro ENVVar
+	if err := mconfig.Get("micro").Scan(&MicroConfig); err != nil {
+		fmt.Println(err)
+	}
+
+	// read a database host
+	if err := mconfig.Get("hosts", "database").Scan(&DBConfig); err != nil {
+		fmt.Println(err)
+	}
+
+	// read a cache
+	if err := mconfig.Get("hosts", "cache").Scan(&CacheConfig); err != nil {
+		fmt.Println(err)
+	}
+
+	//	ServiceName = MicroConfig.ServeName
+
+}

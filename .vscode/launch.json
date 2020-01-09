@@ -8,10 +8,11 @@
             "name": "Launch",
             "type": "go",
             "request": "launch",
-            "mode": "auto",
-            "program": "${fileDirname}",
+            "mode": "debug",
+            "program": "${workspaceFolder}/example/main.go",
             "env": {},
             "args": [
+                "--server_name=micro.cn.edge.node-c",
                 "--XMicroEdgeServiceAddr=192.168.1.198:7700",
                 "--XMicroEdgeServiceTransport=tcp",
             ]
