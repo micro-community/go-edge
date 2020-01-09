@@ -31,7 +31,7 @@ type stubClient struct {
 	seq  uint64
 }
 
-func newStubClientOption(options ...client.Option) client.Options {
+func newOption(options ...client.Option) client.Options {
 
 	opts := client.Options{
 		Codecs: make(map[string]codec.NewCodec),
@@ -55,7 +55,7 @@ func newStubClientOption(options ...client.Option) client.Options {
 //NewClient return a new custom rpc client
 func NewClient(opts ...client.Option) client.Client {
 
-	options := newStubClientOption(opts...)
+	options := newOption(opts...)
 
 	p := pool.NewPool(
 		pool.Size(options.PoolSize),

@@ -33,7 +33,7 @@ type stubServer struct {
 // 	h func(context.Context, Request, interface{}) error
 // }
 
-func newStubServerOption(opt ...server.Option) server.Options {
+func newOption(opt ...server.Option) server.Options {
 	opts := server.Options{
 		Codecs:   make(map[string]codec.NewCodec),
 		Metadata: map[string]string{},
@@ -48,7 +48,7 @@ func newStubServerOption(opt ...server.Option) server.Options {
 
 //NewServer return a new custom rpc server
 func NewServer(opts ...server.Option) server.Server {
-	options := newStubServerOption(opts...)
+	options := newOption(opts...)
 	router := DefaultRouter()
 
 	return &stubServer{
