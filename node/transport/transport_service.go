@@ -2,8 +2,8 @@ package transport
 
 import (
 	"strings"
-	tcp "github.com/micro-community/x-edge/end/transport/tcp"
-	udp "github.com/micro-community/x-edge/end/transport/udp"
+	tcp "github.com/micro-community/x-edge/node/transport/tcp"
+	udp "github.com/micro-community/x-edge/node/transport/udp"
 	ts "github.com/micro/go-micro/transport"
 )
 

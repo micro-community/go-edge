@@ -3,13 +3,13 @@ package edge
 import (
 	"fmt"
 
-	esrv "github.com/micro-community/x-edge/end/server"
+	esrv "github.com/micro-community/x-edge/node/server"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
 
 	"github.com/micro-community/x-edge/config"
-	"github.com/micro-community/x-edge/end/router"
-	ts "github.com/micro-community/x-edge/end/transport"
+	"github.com/micro-community/x-edge/node/router"
+	ts "github.com/micro-community/x-edge/node/transport"
 )
 
 const XEDGEADDR = "XMicroEdgeServiceAddr"

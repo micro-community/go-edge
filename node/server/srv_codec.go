@@ -6,7 +6,7 @@ import (
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/transport"
 	"github.com/micro/go-micro/util/socket"
-	"github.com/micro-community/x-edge/end/iobuffer"
+	"github.com/micro-community/x-edge/node/iobuffer"
 )
 
 type codecBuffer struct {
@@ -146,7 +146,7 @@ func (c *codecBuffer) Write(r *codec.Message, b interface{}) error {
 
 	// send the request
 	if err := c.socket.Send(&msg); err != nil {
-		return errors.InternalServerError("end.transport", err.Error())
+		return errors.InternalServerError("node.transport", err.Error())
 	}
 	return nil
 }

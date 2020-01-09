@@ -10,8 +10,8 @@ import (
 
 	"github.com/micro/go-micro/util/log"
 
-	xmlc "github.com/micro-community/x-edge/end/codec"
-	"github.com/micro-community/x-edge/end/stream"
+	xmlc "github.com/micro-community/x-edge/node/codec"
+	"github.com/micro-community/x-edge/nodee/stream"
 
 	//	"github.com/google/uuid"
 	"github.com/micro/go-micro/client"

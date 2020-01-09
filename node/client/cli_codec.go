@@ -1,8 +1,8 @@
 package client
 
 import (
-	xmlc "github.com/micro-community/x-edge/end/codec"
-	"github.com/micro-community/x-edge/end/iobuffer"
+	xmlc "github.com/micro-community/x-edge/node/codec"
+	"github.com/micro-community/x-edge/nodee/iobuffer"
 	"github.com/micro/go-micro/codec"
 	raw "github.com/micro/go-micro/codec/bytes"
 	"github.com/micro/go-micro/errors"
@@ -126,7 +126,7 @@ func (c *codecBuffer) Write(m *codec.Message, body interface{}) error {
 	}
 	// send the request
 	if err := c.socket.Send(&msg); err != nil {
-		return errors.InternalServerError("end.transport", err.Error())
+		return errors.InternalServerError("nodee.transport", err.Error())
 	}
 	return nil
 }

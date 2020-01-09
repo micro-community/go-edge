@@ -8,7 +8,7 @@ import (
 	"net"
 	"time"
 
-	ext "github.com/micro-community/x-edge/end/transport/extractor"
+	ext "github.com/micro-community/x-edge/node/transport/extractor"
 	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
