@@ -1,18 +1,15 @@
-//Package transport provides a TCP transport
-package transport
+//Package tcp provides a TCP transport
+package tcp
 
 import (
 	"bufio"
 	"crypto/tls"
 	"errors"
 	"net"
-	"strings"
 	"time"
 
-	udp "github.com/micro-community/x-edge/node/transport/udp"
 	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
-	ts "github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
 	"github.com/micro/go-micro/util/log"
 	mnet "github.com/micro/go-micro/util/net"
@@ -318,12 +315,12 @@ func NewTransport(opts ...transport.Option) transport.Transport {
 	return &tcpTransport{opts: options}
 }
 
-func CreateTransport(name string) ts.Transport {
-	str := strings.ToLower(name)
-	if str == "udp" {
-		return udp.NewTransport()
-	} else {
-		return NewTransport()
-	}
+// func CreateTransport(name string) ts.Transport {
+// 	str := strings.ToLower(name)
+// 	if str == "udp" {
+// 		return udp.NewTransport()
+// 	} else {
+// 		return NewTransport()
+// 	}
 
-}
+// }
