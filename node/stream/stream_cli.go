@@ -157,7 +157,7 @@ func (r *streamClient) Close() error {
 	default:
 		close(r.closed)
 
-		// send the end of stream message
+		// send the node of stream message
 		if r.sendEOS {
 			// no need to check for error
 			r.codec.Write(&codec.Message{

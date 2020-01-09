@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/micro/go-micro/transport"
-	xmlc "github.com/micro-community/x-edge/end/codec"
+	xmlc "github.com/micro-community/x-edge/node/codec"
 )
 
 func expectedPort(t *testing.T, expected string, lsn transport.Listener) {
