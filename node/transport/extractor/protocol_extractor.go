@@ -1,29 +1,16 @@
 package extractor
 
 import (
-	"regexp"
+	"bufio"
 )
 
-var minDataPakckageLenth = 50
+var call bufio.SplitFunc
 
-//extract data pakcage
 func DataExtractor(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	return call(data, atEOF)
+}
 
-	if atEOF || len(data) == 0 {
-		return 0, nil, nil
-	}
-
-	reg, _ := regexp.Compile("(?i:</protocol>)")
-
-	indexs := reg.FindIndex(data)
-
-	if indexs == nil || indexs[0] <= minDataPakckageLenth {
-		return -1, data, nil //errors.New("error to extract data from socket")
-		//return
-	}
-
-	advance = indexs[1]
-	token = data[0:indexs[1]]
-	return
-
+// RegisterExtractorHandler for Data Extractor
+func RegisterExtractorHandler(model bufio.SplitFunc) {
+	call = model
 }
