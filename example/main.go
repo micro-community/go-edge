@@ -2,11 +2,14 @@ package main
 
 import (
 	"os"
+	"regexp"
 
 	edge "github.com/micro-community/x-edge"
 	eventbroker "github.com/micro-community/x-edge/broker"
 	"github.com/micro-community/x-edge/config"
+	"github.com/micro-community/x-edge/end/transport/extractor"
 	"github.com/micro-community/x-edge/handler"
+
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 	_ "github.com/micro-community/x-edge/subscriber"
 	"github.com/micro/cli"
@@ -28,8 +31,7 @@ func main() {
 			Name:   "XMicroEdgeServiceTransport",
 			Usage:  "tcp",
 			EnvVar: XEDGETRANSPORT,
-			//Value: "tcp"
-			Value: "ppp",
+			Value:  "tcp", //or udp
 		}),
 		//Set address for XMicroEdgeService 192.168.1.198:6600
 		micro.Flags(cli.StringFlag{
@@ -69,6 +71,8 @@ func main() {
 			}
 		}),
 	)
+	// Register Handler for Data Extractor
+	extractor.RegisterExtractorHandler(DataExtractor)
 
 	// Register Handler
 	protocol.RegisterProtocolHandler(service.Server(), new(handler.Protocol))
@@ -89,4 +93,25 @@ func main() {
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func DataExtractor(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	//set package min lengh
+	minDataPackageLenth := 50
+
+	if atEOF || len(data) == 0 {
+		return 0, nil, nil
+	}
+
+	reg, _ := regexp.Compile("(?i:</protocol>)")
+
+	indexs := reg.FindIndex(data)
+
+	if indexs == nil || indexs[0] <= minDataPackageLenth {
+		return -1, data, nil //errors.New("error to extract data from socket")
+	}
+
+	advance = indexs[1]
+	token = data[0:indexs[1]]
+	return
 }
