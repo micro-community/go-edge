@@ -6,7 +6,7 @@
     address = "10.0.0.2"
     port  = 6379
 [micro]
-  microservername = "micro.cn.edge.node"
+  microservername = "micro.cn.edge"
   microserveraddress = ":8080"
   microregisterttl = 30
   microregisterinterval = 10
