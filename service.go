@@ -27,7 +27,7 @@ func RunProc() {
 	service := micro.NewService(
 		micro.Server(svr),
 		micro.Name(config.XMicroEdgeServiceName),
-		micro.Version("latest"),
+		micro.Version(config.BuildVersion()),
 		micro.Address(config.XMicroEdgeServiceAddr),
 		micro.Transport(t),
 		micro.Metadata(map[string]string{
