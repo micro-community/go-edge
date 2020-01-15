@@ -6,7 +6,7 @@ It supports raw tcp/udp.
 ## Struct
 
 <div align="center">
-    <img src="https://github.com/danny-gao/Learn-GitHub/blob/master/data%20flow.png">
+    <img src="https://github.com/micro-community/x-edge/blob/master/Struct.png">
 </div>
 
 + Edge结构取消了go-micro中的Registry、Broker、Selector，保留了Client、Server、Transport和Coder
@@ -14,9 +14,8 @@ It supports raw tcp/udp.
 ## Data Flow
 
 <div align="center">
-    <img src="https://github.com/danny-gao/Learn-GitHub/blob/master/data%20flow.png">
+    <img src="https://github.com/micro-community/x-edge/blob/master/data%20flow.png">
 </div>
-![Image]()
 
 + 启动流程: go-micro  启动----> x-edge 启动--->x-edge监听---> go-micro 监听
 + transport从device（client端）收到tcp或者udp数据包（数据包格式可以自定义，默认是xml），调用edgeServer
