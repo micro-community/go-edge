@@ -32,6 +32,7 @@ func newService(opts ...Option) micro.Service {
 	nodeService := micro.NewService(
 		micro.Server(esrv.NewServer()),
 		micro.Name(config.XMicroEdgeServiceName),
+		micro.Version(config.BuildVersion()),
 		micro.Address(config.XMicroEdgeServiceAddr),
 		micro.Transport(tcp.NewTransport()),
 		micro.Metadata(map[string]string{
