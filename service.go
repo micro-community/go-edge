@@ -1,196 +1,101 @@
 package edge
 
 import (
-	"sync"
-
-	"github.com/micro-community/x-edge/config"
-	ecli "github.com/micro-community/x-edge/node/client"
-	esrv "github.com/micro-community/x-edge/node/server"
-	"github.com/micro-community/x-edge/node/transport/tcp"
-	micro "github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
-
-	"github.com/micro/cli"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/service"
 )
 
-type service struct {
-	opts Options
-	//	mux *http.ServeMux
-	sync.Mutex
-	running bool
-	static  bool
-	exit    chan chan error
+type edgeService struct {
+	opts service.Options
 }
 
-func newService(opts ...Option) micro.Service {
-	options := newOptions(opts...)
-	nodeService := micro.NewService(
-		micro.Server(esrv.NewServer()),
-		micro.Version(config.BuildVersion()),
-		micro.Transport(tcp.NewTransport()),
-	)
-
-	options.Service = nodeService
-
-	s := &service{
-		opts:   options,
-		static: true,
+func newService(opts ...service.Option) service.Service {
+	options := service.NewOptions(opts...)
+	return &edgeService{
+		opts: options,
 	}
-
-	return s
 }
 
-func (s *service) start() error {
-	s.Lock()
-	defer s.Unlock()
-
-	if s.running {
-		return nil
-	}
-
-	l, err := s.listen("tcp", s.opts.Address)
-	if err != nil {
-		return err
-	}
-
-	s.opts.Address = l.Addr().String()
-
-	s.exit = make(chan chan error, 1)
-	s.running = true
-
-	go func() {
-		ch := <-s.exit
-		ch <- l.Close()
-	}()
-
-	log.Logf("Listening on %v", l.Addr().String())
-	return nil
+func (s *edgeService) Name() string {
+	return s.opts.Server.Options().Name
 }
 
-func (s *service) stop() error {
-	s.Lock()
-	defer s.Unlock()
-
-	if !s.running {
-		return nil
-	}
-
-	ch := make(chan error, 1)
-	s.exit <- ch
-	s.running = false
-	log.Log("Stopping")
-
-	return <-ch
-}
-
-func (s *service) Client() client.Client {
-	// rt := mhttp.NewRoundTripper(
-	// 	mhttp.WithRegistry(registry.DefaultRegistry),
-	// )
-	return ecli.NewClient()
-}
-
-func (s *service) Handle(pattern string, handler node.Handler) {
-
-	// register the handler
-	//	s.mux.Handle(pattern, handler)
-}
-
-func (s *service) HandleFunc(pattern string, handler func(node.ResponseWriter, *node.Request)) {
-	var seen bool
-	// for _, ep := range s.srv.Endpoints {
-	// 	if ep.Name == pattern {
-	// 		seen = true
-	// 		break
-	// 	}
-	// }
-	// if !seen {
-	// 	s.srv.Endpoints = append(s.srv.Endpoints, &registry.Endpoint{
-	// 		Name: pattern,
-	// 	})
-	// }
-
-	//s.mux.HandleFunc(pattern, handler)
-}
-
-func (s *service) Init(opts ...Option) {
+// Init initialises options. Additionally it calls cmd.Init
+// which parses command line flags. cmd.Init is only called
+// on first Init.
+func (s *edgeService) Init(opts ...service.Option) {
+	// process options
 	for _, o := range opts {
 		o(&s.opts)
 	}
-
-	serviceOpts := []micro.Option{}
-
-	if len(s.opts.Flags) > 0 {
-		serviceOpts = append(serviceOpts, micro.Flags(s.opts.Flags...))
-	}
-
-	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) {
-
-		if name := ctx.String("server_name"); len(name) > 0 {
-			s.opts.Name = name
-		}
-
-		if ver := ctx.String("server_version"); len(ver) > 0 {
-			s.opts.Version = ver
-		}
-
-		if addr := ctx.String("server_address"); len(addr) > 0 {
-			s.opts.Address = addr
-		}
-
-		if adv := ctx.String("server_advertise"); len(adv) > 0 {
-			s.opts.Advertise = adv
-		}
-
-		if s.opts.Action != nil {
-			s.opts.Action(ctx)
-		}
-	}))
-
-	s.opts.Service.Init(serviceOpts...)
-	//	srv := s.genSrv()
-	//	srv.Endpoints = s.srv.Endpoints
-	//	s.srv = srv
 }
 
-func (s *service) Run() error {
-	if err := s.start(); err != nil {
-		return err
-	}
-
-	// start reg loop
-	ex := make(chan bool)
-
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT)
-
-	select {
-	// wait on kill signal
-	case sig := <-ch:
-		log.Logf("Received signal %s", sig)
-	// wait on context cancel
-	case <-s.opts.Context.Done():
-		log.Logf("Received context shutdown")
-	}
-
-	// exit reg loop
-	close(ex)
-
-	return s.stop()
+func (s *edgeService) String() string {
+	return "edge"
 }
 
-// Options returns the options for the given service
-func (s *service) Options() Options {
+func (s *edgeService) Options() service.Options {
 	return s.opts
 }
 
-func (s *service) listen(network, addr string) (net.Listener, error) {
-	var l net.Listener
+func (s *edgeService) Client() client.Client {
+	return s.opts.Client
+}
 
-	return l, nil
+func (s *edgeService) Server() server.Server {
+	return s.opts.Server
+}
+
+func (s *edgeService) Start() error {
+	for _, fn := range s.opts.BeforeStart {
+		if err := fn(); err != nil {
+			return err
+		}
+	}
+
+	if err := s.opts.Server.Start(); err != nil {
+		return err
+	}
+
+	for _, fn := range s.opts.AfterStart {
+		if err := fn(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *edgeService) Run() error {
+	if err := s.Start(); err != nil {
+		return err
+	}
+
+	// wait on context cancel
+	<-s.opts.Context.Done()
+
+	return s.Stop()
+}
+
+func (s *edgeService) Stop() error {
+	var gerr error
+
+	for _, fn := range s.opts.BeforeStop {
+		if err := fn(); err != nil {
+			gerr = err
+		}
+	}
+
+	if err := s.opts.Server.Stop(); err != nil {
+		return err
+	}
+
+	for _, fn := range s.opts.AfterStop {
+		if err := fn(); err != nil {
+			gerr = err
+		}
+	}
+
+	return gerr
 }

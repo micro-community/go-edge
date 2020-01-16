@@ -6,9 +6,6 @@ import (
 	micro "github.com/micro/go-micro"
 )
 
-//Option Of edge node server
-type Option func(o *Options)
-
 //Default Config
 var (
 	// For serving

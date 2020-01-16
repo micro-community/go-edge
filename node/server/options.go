@@ -13,8 +13,8 @@ type DataExtractor func(data []byte, atEOF bool) (advance int, token []byte, err
 
 type dataExtractorFunc struct{}
 
-// WithExtractor should be used to setup a extractor
-func WithExtractor(dex DataExtractor) server.Option {
+// Extractor should be used to setup a extractor
+func Extractor(dex DataExtractor) server.Option {
 	return func(o *server.Options) {
 		if o.Context == nil {
 			o.Context = context.Background()
