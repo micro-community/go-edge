@@ -9,9 +9,6 @@ import (
 //Option Of edge node server
 type Option func(o *Options)
 
-//DataExtractor for package pasering
-type DataExtractor func(data []byte, atEOF bool) (advance int, token []byte, err error)
-
 //Default Config
 var (
 	// For serving
