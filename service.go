@@ -31,14 +31,8 @@ func newService(opts ...Option) micro.Service {
 	options := newOptions(opts...)
 	nodeService := micro.NewService(
 		micro.Server(esrv.NewServer()),
-		micro.Name(config.XMicroEdgeServiceName),
 		micro.Version(config.BuildVersion()),
-		micro.Address(config.XMicroEdgeServiceAddr),
 		micro.Transport(tcp.NewTransport()),
-		micro.Metadata(map[string]string{
-			"type": "protocol-edge-node-server",
-		},
-		),
 	)
 
 	options.Service = nodeService
@@ -66,18 +60,6 @@ func (s *service) start() error {
 
 	s.opts.Address = l.Addr().String()
 
-	for _, fn := range s.opts.BeforeStart {
-		if err := fn(); err != nil {
-			return err
-		}
-	}
-
-	for _, fn := range s.opts.AfterStart {
-		if err := fn(); err != nil {
-			return err
-		}
-	}
-
 	s.exit = make(chan chan error, 1)
 	s.running = true
 
@@ -98,26 +80,10 @@ func (s *service) stop() error {
 		return nil
 	}
 
-	for _, fn := range s.opts.BeforeStop {
-		if err := fn(); err != nil {
-			return err
-		}
-	}
-
 	ch := make(chan error, 1)
 	s.exit <- ch
 	s.running = false
-
 	log.Log("Stopping")
-
-	for _, fn := range s.opts.AfterStop {
-		if err := fn(); err != nil {
-			if chErr := <-ch; chErr != nil {
-				return chErr
-			}
-			return err
-		}
-	}
 
 	return <-ch
 }
@@ -129,14 +95,7 @@ func (s *service) Client() client.Client {
 	return ecli.NewClient()
 }
 
-func (s *service) Handle(pattern string, handler edge.Handler) {
-	var seen bool
-	for _, ep := range s.srv.Endpoints {
-		if ep.Name == pattern {
-			seen = true
-			break
-		}
-	}
+func (s *service) Handle(pattern string, handler node.Handler) {
 
 	// register the handler
 	//	s.mux.Handle(pattern, handler)
@@ -156,10 +115,10 @@ func (s *service) HandleFunc(pattern string, handler func(node.ResponseWriter, *
 	// 	})
 	// }
 
-	s.mux.HandleFunc(pattern, handler)
+	//s.mux.HandleFunc(pattern, handler)
 }
 
-func (s *service) Init(opts ...Option) error {
+func (s *service) Init(opts ...Option) {
 	for _, o := range opts {
 		o(&s.opts)
 	}
@@ -180,10 +139,6 @@ func (s *service) Init(opts ...Option) error {
 			s.opts.Version = ver
 		}
 
-		if id := ctx.String("server_id"); len(id) > 0 {
-			s.opts.ID = id
-		}
-
 		if addr := ctx.String("server_address"); len(addr) > 0 {
 			s.opts.Address = addr
 		}
@@ -201,8 +156,6 @@ func (s *service) Init(opts ...Option) error {
 	//	srv := s.genSrv()
 	//	srv.Endpoints = s.srv.Endpoints
 	//	s.srv = srv
-
-	return nil
 }
 
 func (s *service) Run() error {

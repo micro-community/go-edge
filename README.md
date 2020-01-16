@@ -1,14 +1,13 @@
 # x-edge
 
 Edge framework for device connections modified from go-micro.
-It supports raw tcp/udp.
+It supports raw tcp/udp and http in future.
 
-## 说明
+## instruction
 
 + 当前项目还处于draft状态，变动可能会很大.
 + master分支，服务设计并不规范，但是可以用run.
-+ dev-experiment 是做规范化micro接口风格的规范设计.
-
++ dev-experiment 是做规范化micro接口风格的设计.
 
 ## principal concept
 

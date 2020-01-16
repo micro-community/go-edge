@@ -1,6 +1,8 @@
 package config
 
+import "fmt"
 
+//Version info
 var (
 	GitCommit string
 	GitTag    string
@@ -11,7 +13,7 @@ var (
 	version     = "1.18.0"
 )
 
-
+//BuildVersion for framework
 func BuildVersion() string {
 	microVersion := version
 

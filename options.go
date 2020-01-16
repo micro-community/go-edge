@@ -12,7 +12,6 @@ import (
 type Options struct {
 	Name      string
 	Version   string
-	ID        string
 	Metadata  map[string]string
 	Address   string
 	Advertise string
@@ -25,19 +24,14 @@ type Options struct {
 	Context context.Context // Alternative Options
 	Service micro.Service
 
-	Secure      bool
-	TLSConfig   *tls.Config
-	BeforeStart []func() error
-	BeforeStop  []func() error
-	AfterStart  []func() error
-	AfterStop   []func() error
+	Secure    bool
+	TLSConfig *tls.Config
 }
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
 		Name:           DefaultName,
 		Version:        DefaultVersion,
-		ID:             DefaultID,
 		Address:        DefaultAddress,
 		Service:        micro.NewService(),
 		Context:        context.TODO(),
@@ -55,23 +49,6 @@ func newOptions(opts ...Option) Options {
 func Name(n string) Option {
 	return func(o *Options) {
 		o.Name = n
-	}
-}
-
-// Icon specifies an icon url to load in the UI
-func Icon(ico string) Option {
-	return func(o *Options) {
-		if o.Metadata == nil {
-			o.Metadata = make(map[string]string)
-		}
-		o.Metadata["icon"] = ico
-	}
-}
-
-//ID Unique server id
-func ID(id string) Option {
-	return func(o *Options) {
-		o.ID = id
 	}
 }
 
@@ -137,34 +114,6 @@ func Flags(flags ...cli.Flag) Option {
 func Action(a func(*cli.Context)) Option {
 	return func(o *Options) {
 		o.Action = a
-	}
-}
-
-// BeforeStart is executed before the server starts.
-func BeforeStart(fn func() error) Option {
-	return func(o *Options) {
-		o.BeforeStart = append(o.BeforeStart, fn)
-	}
-}
-
-// BeforeStop is executed before the server stops.
-func BeforeStop(fn func() error) Option {
-	return func(o *Options) {
-		o.BeforeStop = append(o.BeforeStop, fn)
-	}
-}
-
-// AfterStart is executed after server start.
-func AfterStart(fn func() error) Option {
-	return func(o *Options) {
-		o.AfterStart = append(o.AfterStart, fn)
-	}
-}
-
-// AfterStop is executed after server stop.
-func AfterStop(fn func() error) Option {
-	return func(o *Options) {
-		o.AfterStop = append(o.AfterStop, fn)
 	}
 }
 
