@@ -54,7 +54,8 @@ func (t *tcpTransport) Dial(addr string, opts ...transport.DialOption) (transpor
 		encBuf:   encBuf,
 		//		enc:      gob.NewEncoder(encBuf),
 		//		dec:      gob.NewDecoder(conn),
-		timeout: t.opts.Timeout,
+		timeout:       t.opts.Timeout,
+		dataExtractor: t.dataExtractor,
 	}, nil
 }
 
@@ -108,8 +109,9 @@ func (t *tcpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	}
 
 	return &tcpTransportListener{
-		timeout:  t.opts.Timeout,
-		listener: l,
+		timeout:       t.opts.Timeout,
+		listener:      l,
+		dataExtractor: t.dataExtractor,
 	}, nil
 }
 

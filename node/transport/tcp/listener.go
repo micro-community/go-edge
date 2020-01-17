@@ -6,15 +6,16 @@ import (
 	"net"
 	"time"
 
-	"github.com/micro/go-micro/util/log"
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/util/log"
 )
 
 type tcpTransportListener struct {
-	listener net.Listener
-	timeout  time.Duration
+	listener      net.Listener
+	timeout       time.Duration
+	dataExtractor nts.DataExtractor
 }
-
 
 func (t *tcpTransportListener) Addr() string {
 	return t.listener.Addr().String()
@@ -48,9 +49,10 @@ func (t *tcpTransportListener) Accept(fn func(transport.Socket)) error {
 
 		encBuf := bufio.NewWriter(c)
 		sock := &tcpTransportSocket{
-			timeout: t.timeout,
-			conn:    c,
-			encBuf:  encBuf,
+			timeout:       t.timeout,
+			conn:          c,
+			encBuf:        encBuf,
+			dataExtractor: t.dataExtractor,
 			//			enc:     gob.NewEncoder(encBuf),
 			//			dec:     gob.NewDecoder(c),
 		}
@@ -67,4 +69,3 @@ func (t *tcpTransportListener) Accept(fn func(transport.Socket)) error {
 		}()
 	}
 }
-
