@@ -4,6 +4,11 @@ import (
 	"regexp"
 )
 
+//DataExtractor for package pasering
+type DataExtractor func(data []byte, atEOF bool) (advance int, token []byte, err error)
+
+type dataExtractorFuncKey struct{}
+
 var minDataPakckageLenth = 50
 
 //extract data pakcage

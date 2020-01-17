@@ -6,7 +6,7 @@ import (
 	"github.com/micro/go-micro/codec"
 	raw "github.com/micro/go-micro/codec/bytes"
 	"github.com/micro/go-micro/errors"
-	"github.com/micro/go-micro/transport/tcp"
+	"github.com/micro/go-micro/transport"
 )
 
 var (

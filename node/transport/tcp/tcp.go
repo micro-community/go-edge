@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net"
 	"time"
-
+	nts "github.com/micro-community/x-edge/node/transpot"
 	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
@@ -31,6 +31,7 @@ type tcpTransportClient struct {
 	//	dec      *gob.Decoder
 	encBuf  *bufio.Writer
 	timeout time.Duration
+	dataExtractor nts.DataExtractor
 }
 
 type tcpTransportSocket struct {
@@ -71,6 +72,12 @@ func (t *tcpTransportClient) Send(m *transport.Message) error {
 func (t *tcpTransportClient) Recv(m *transport.Message) error {
 	// set timeout if its greater than 0
 
+	if t.dialOpts.Context != nil && t.dataExtractor == nil {
+		if v := t.dialOpts.Context.Value(codecsKey{}); v != nil {
+			t.dataExtractor = v.(transport.DataExtractor)
+		}
+	}
+
 	if m == nil {
 		return errors.New("message passed in is nil")
 	}
@@ -80,7 +87,7 @@ func (t *tcpTransportClient) Recv(m *transport.Message) error {
 	}
 
 	scanner := bufio.NewScanner(t.conn)
-	scanner.Split(dataExtractor)
+	scanner.Split(t.dataExtractor)
 
 	if scanner.Scan() {
 		m.Body = scanner.Bytes()
@@ -115,6 +122,7 @@ func (t *tcpTransportSocket) Recv(m *transport.Message) error {
 	//替代NEWScanner的错误
 	//scanner disconnected的错误
 	scanner := bufio.NewScanner(t.conn)
+
 	scanner.Split(dataExtractor)
 
 	if scanner.Scan() {
@@ -195,116 +203,6 @@ func (t *tcpTransportListener) Accept(fn func(transport.Socket)) error {
 	}
 }
 
-func (t *tcpTransport) Dial(addr string, opts ...transport.DialOption) (transport.Client, error) {
-	dopts := transport.DialOptions{
-		Timeout: transport.DefaultDialTimeout,
-	}
-
-	for _, opt := range opts {
-		opt(&dopts)
-	}
-
-	var conn net.Conn
-	var err error
-
-	// TODO: support dial option here rather than using internal config
-	if t.opts.Secure || t.opts.TLSConfig != nil {
-		config := t.opts.TLSConfig
-		if config == nil {
-			config = &tls.Config{
-				InsecureSkipVerify: true,
-			}
-		}
-		conn, err = tls.DialWithDialer(&net.Dialer{Timeout: dopts.Timeout}, "tcp", addr, config)
-	} else {
-		conn, err = net.DialTimeout("tcp", addr, dopts.Timeout)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	encBuf := bufio.NewWriter(conn)
-
-	return &tcpTransportClient{
-		dialOpts: dopts,
-		conn:     conn,
-		encBuf:   encBuf,
-		//		enc:      gob.NewEncoder(encBuf),
-		//		dec:      gob.NewDecoder(conn),
-		timeout: t.opts.Timeout,
-	}, nil
-}
-
-func (t *tcpTransport) Listen(addr string, opts ...transport.ListenOption) (transport.Listener, error) {
-	var options transport.ListenOptions
-	for _, o := range opts {
-		o(&options)
-	}
-
-	var l net.Listener
-	var err error
-
-	// TODO: support use of listen options
-	if t.opts.Secure || t.opts.TLSConfig != nil {
-		config := t.opts.TLSConfig
-
-		fn := func(addr string) (net.Listener, error) {
-			if config == nil {
-				hosts := []string{addr}
-
-				// check if its a valid host:port
-				if host, _, err := net.SplitHostPort(addr); err == nil {
-					if len(host) == 0 {
-						hosts = maddr.IPs()
-					} else {
-						hosts = []string{host}
-					}
-				}
-
-				// generate a certificate
-				cert, err := mls.Certificate(hosts...)
-				if err != nil {
-					return nil, err
-				}
-				config = &tls.Config{Certificates: []tls.Certificate{cert}}
-			}
-			return tls.Listen("tcp", addr, config)
-		}
-
-		l, err = mnet.Listen(addr, fn)
-	} else {
-		fn := func(addr string) (net.Listener, error) {
-			return net.Listen("tcp", addr)
-		}
-
-		l, err = mnet.Listen(addr, fn)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &tcpTransportListener{
-		timeout:  t.opts.Timeout,
-		listener: l,
-	}, nil
-}
-
-func (t *tcpTransport) Init(opts ...transport.Option) error {
-	for _, o := range opts {
-		o(&t.opts)
-	}
-	return nil
-}
-
-func (t *tcpTransport) Options() transport.Options {
-	return t.opts
-}
-
-func (t *tcpTransport) String() string {
-	return "tcp"
-}
 
 //NewTransport Return a New TCP Transport
 func NewTransport(opts ...transport.Option) transport.Transport {
@@ -314,13 +212,3 @@ func NewTransport(opts ...transport.Option) transport.Transport {
 	}
 	return &tcpTransport{opts: options}
 }
-
-// func CreateTransport(name string) ts.Transport {
-// 	str := strings.ToLower(name)
-// 	if str == "udp" {
-// 		return udp.NewTransport()
-// 	} else {
-// 		return NewTransport()
-// 	}
-
-// }

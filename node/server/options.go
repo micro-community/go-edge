@@ -1,27 +1,10 @@
 package server
 
 import (
-	"context"
-
 	"github.com/micro/go-micro/codec"
 	"github.com/micro/go-micro/server"
 	"github.com/micro/go-micro/transport"
 )
-
-//DataExtractor for package pasering
-type DataExtractor func(data []byte, atEOF bool) (advance int, token []byte, err error)
-
-type dataExtractorFunc struct{}
-
-// Extractor should be used to setup a extractor
-func Extractor(dex DataExtractor) server.Option {
-	return func(o *server.Options) {
-		if o.Context == nil {
-			o.Context = context.Background()
-		}
-		o.Context = context.WithValue(o.Context, dataExtractorFunc{}, dex)
-	}
-}
 
 func newOptions(opt ...server.Option) server.Options {
 	opts := server.Options{

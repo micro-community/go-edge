@@ -8,12 +8,14 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/micro/go-micro/transport"
 	"github.com/micro/go-micro/util/log"
 
 	xmlc "github.com/micro-community/x-edge/node/codec"
 	"github.com/micro-community/x-edge/node/stream"
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/client/pool"
+	"github.com/micro/go-micro/client/selector"
 	"github.com/micro/go-micro/codec"
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/metadata"
@@ -76,7 +78,7 @@ func NewClient(opts ...client.Option) client.Client {
 }
 
 func (c *nodeClient) newCodec(contentType string, client transport.Client, stream bool) codec.Codec {
-	if cf, ok := s.opts.Codecs[contentType]; ok {
+	if cf, ok := c.opts.Codecs[contentType]; ok {
 		return newBuffCodec(client, cf, stream)
 	}
 	log.Infof("Unsupported Content-Type: %s", contentType)
@@ -106,23 +108,23 @@ func (c *nodeClient) call(ctx context.Context, req client.Request, resp interfac
 	// set the accept header
 	msg.Header["Accept"] = req.ContentType()
 
-	con, err := s.pool.Get(address, transport.WithTimeout(opts.DialTimeout))
+	con, err := c.pool.Get(address, transport.WithTimeout(opts.DialTimeout))
 	if err != nil {
 		return errors.InternalServerError("go.micro.raw.client", "connection error: %v", err)
 	}
 
-	seq := atomic.LoadUint64(&s.seq)
-	atomic.AddUint64(&s.seq, 1)
+	seq := atomic.LoadUint64(&c.seq)
+	atomic.AddUint64(&c.seq, 1)
 
 	//if this is a file ,it should be a stream,now we just ignore it.
-	msgCodec := s.newCodec(xmlc.DefaultContentType, con, false)
+	msgCodec := c.newCodec(xmlc.DefaultContentType, con, false)
 
 	rsp := &response{
 		socket: con,
 		codec:  msgCodec,
 	}
 
-	releaseOP := func(err error) { s.pool.Release(con, err) }
+	releaseOP := func(err error) { c.pool.Release(con, err) }
 
 	stream := stream.NewClientStrem(ctx, seq, req, rsp, msgCodec, releaseOP)
 
@@ -202,24 +204,24 @@ func (c *nodeClient) stream(ctx context.Context, req client.Request, opts client
 		dOpts = append(dOpts, transport.WithTimeout(opts.DialTimeout))
 	}
 
-	con, err := s.pool.Get(address, dOpts...)
+	con, err := c.pool.Get(address, dOpts...)
 	if err != nil {
 		return nil, errors.InternalServerError("go.micro.client", "connection error: %v", err)
 	}
 
 	// increment the sequence number
-	seq := atomic.LoadUint64(&s.seq)
-	atomic.AddUint64(&s.seq, 1)
+	seq := atomic.LoadUint64(&c.seq)
+	atomic.AddUint64(&c.seq, 1)
 
 	//if this is a file ,it should be a stream,now we just ignore it.
-	msgCodec := s.newCodec(xmlc.DefaultContentType, con, false)
+	msgCodec := c.newCodec(xmlc.DefaultContentType, con, false)
 
 	rsp := &response{
 		socket: con,
 		codec:  msgCodec,
 	}
 
-	releaseOP := func(err error) { s.pool.Release(con, err) }
+	releaseOP := func(err error) { c.pool.Release(con, err) }
 
 	stream := stream.NewClientStrem(ctx, seq, req, rsp, msgCodec, releaseOP)
 
@@ -256,20 +258,20 @@ func (c *nodeClient) stream(ctx context.Context, req client.Request, opts client
 }
 
 func (c *nodeClient) Init(opts ...client.Option) error {
-	size := s.opts.PoolSize
-	ttl := s.opts.PoolTTL
-	tr := s.opts.Transport
+	size := c.opts.PoolSize
+	ttl := c.opts.PoolTTL
+	tr := c.opts.Transport
 
 	for _, o := range opts {
-		o(&s.opts)
+		o(&c.opts)
 	}
 
 	// update pool configuration if the options changed
-	if size != s.opts.PoolSize || ttl != s.opts.PoolTTL || tr != s.opts.Transport {
+	if size != c.opts.PoolSize || ttl != c.opts.PoolTTL || tr != c.opts.Transport {
 		// close existing pool
-		s.pool.Close()
+		c.pool.Close()
 		// create new pool
-		s.pool = pool.NewPool(
+		c.pool = pool.NewPool(
 			pool.Size(c.opts.PoolSize),
 			pool.TTL(c.opts.PoolTTL),
 			pool.Transport(c.opts.Transport),
@@ -280,7 +282,7 @@ func (c *nodeClient) Init(opts ...client.Option) error {
 }
 
 func (c *nodeClient) Options() client.Options {
-	return s.opts
+	return c.opts
 }
 
 //we will use static selector
@@ -299,7 +301,7 @@ func (c *nodeClient) next(request client.Request, opts client.CallOptions) (sele
 	}
 
 	// get next nodes from the selector
-	next, err := s.opts.Selector.Select(service, opts.SelectOptions...)
+	next, err := c.opts.Selector.Select(service, opts.SelectOptions...)
 	if err != nil {
 		if err == selector.ErrNotFound {
 			return nil, errors.InternalServerError("go.micro.client", "service %s: %s", service, err.Error())
@@ -312,12 +314,12 @@ func (c *nodeClient) next(request client.Request, opts client.CallOptions) (sele
 
 func (c *nodeClient) Call(ctx context.Context, request client.Request, response interface{}, opts ...client.CallOption) error {
 	// make a copy of call opts
-	callOpts := s.opts.CallOptions
+	callOpts := c.opts.CallOptions
 	for _, opt := range opts {
 		opt(&callOpts)
 	}
 
-	next, err := s.next(request, callOpts)
+	next, err := c.next(request, callOpts)
 	if err != nil {
 		return err
 	}
@@ -344,7 +346,7 @@ func (c *nodeClient) Call(ctx context.Context, request client.Request, response 
 	}
 
 	// make copy of call method
-	rcall := s.call
+	rcall := c.call
 
 	// return errors.New("go.micro.client", "request timeout", 408)
 	call := func(i int) error {
@@ -371,7 +373,7 @@ func (c *nodeClient) Call(ctx context.Context, request client.Request, response 
 
 		// make the call
 		err = rcall(ctx, request, response, callOpts)
-		s.opts.Selector.Mark(service, node, err)
+		c.opts.Selector.Mark(service, node, err)
 
 		return err
 	}
@@ -411,12 +413,12 @@ func (c *nodeClient) Call(ctx context.Context, request client.Request, response 
 
 func (c *nodeClient) Stream(ctx context.Context, request client.Request, opts ...client.CallOption) (client.Stream, error) {
 	// make a copy of call opts
-	callOpts := s.opts.CallOptions
+	callOpts := c.opts.CallOptions
 	for _, opt := range opts {
 		opt(&callOpts)
 	}
 
-	next, err := s.next(request, callOpts)
+	next, err := c.next(request, callOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -449,8 +451,8 @@ func (c *nodeClient) Stream(ctx context.Context, request client.Request, opts ..
 			return nil, errors.InternalServerError("go.micro.client", "error getting next %s node: %s", service, err.Error())
 		}
 
-		stream, err := s.stream(ctx, request, callOpts)
-		s.opts.Selector.Mark(service, node, err)
+		stream, err := c.stream(ctx, request, callOpts)
+		c.opts.Selector.Mark(service, node, err)
 		return stream, err
 	}
 
@@ -498,11 +500,11 @@ func (c *nodeClient) Publish(ctx context.Context, msg client.Message, opts ...cl
 }
 
 func (c *nodeClient) NewMessage(topic string, message interface{}, opts ...client.MessageOption) client.Message {
-	return newMessage(topic, message, s.opts.ContentType, opts...)
+	return newMessage(topic, message, c.opts.ContentType, opts...)
 }
 
 func (c *nodeClient) NewRequest(service, method string, request interface{}, reqOpts ...client.RequestOption) client.Request {
-	return newRequest(service, method, request, s.opts.ContentType, reqOpts...)
+	return newRequest(service, method, request, c.opts.ContentType, reqOpts...)
 }
 
 func (c *nodeClient) String() string {
