@@ -12,19 +12,14 @@ import (
 
 	xmlc "github.com/micro-community/x-edge/node/codec"
 	"github.com/micro-community/x-edge/node/stream"
-
-	//	"github.com/google/uuid"
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/client/pool"
-	"github.com/micro/go-micro/client/selector"
 	"github.com/micro/go-micro/codec"
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/metadata"
-	"github.com/micro/go-micro/transport/tcp"
-	//	"github.com/micro/go-micro/util/buf"
 )
 
-type stubClient struct {
+type nodeClient struct {
 	once sync.Once
 	opts client.Options
 	pool pool.Pool
@@ -63,7 +58,7 @@ func NewClient(opts ...client.Option) client.Client {
 		pool.Transport(options.Transport),
 	)
 
-	sc := &stubClient{
+	sc := &nodeClient{
 		once: sync.Once{},
 		opts: options,
 		pool: p,
@@ -80,7 +75,7 @@ func NewClient(opts ...client.Option) client.Client {
 	return c
 }
 
-func (s *stubClient) newCodec(contentType string, client transport.Client, stream bool) codec.Codec {
+func (c *nodeClient) newCodec(contentType string, client transport.Client, stream bool) codec.Codec {
 	if cf, ok := s.opts.Codecs[contentType]; ok {
 		return newBuffCodec(client, cf, stream)
 	}
@@ -89,7 +84,7 @@ func (s *stubClient) newCodec(contentType string, client transport.Client, strea
 
 }
 
-func (s *stubClient) call(ctx context.Context, req client.Request, resp interface{}, opts client.CallOptions) error {
+func (c *nodeClient) call(ctx context.Context, req client.Request, resp interface{}, opts client.CallOptions) error {
 
 	address := ctx.Value("remote").(string)
 
@@ -172,7 +167,7 @@ func (s *stubClient) call(ctx context.Context, req client.Request, resp interfac
 	return grr
 }
 
-func (s *stubClient) stream(ctx context.Context, req client.Request, opts client.CallOptions) (client.Stream, error) {
+func (c *nodeClient) stream(ctx context.Context, req client.Request, opts client.CallOptions) (client.Stream, error) {
 
 	//address := ctx.Value("target-service").(string)
 	//address := node.Address
@@ -260,7 +255,7 @@ func (s *stubClient) stream(ctx context.Context, req client.Request, opts client
 	return stream, nil
 }
 
-func (s *stubClient) Init(opts ...client.Option) error {
+func (c *nodeClient) Init(opts ...client.Option) error {
 	size := s.opts.PoolSize
 	ttl := s.opts.PoolTTL
 	tr := s.opts.Transport
@@ -275,21 +270,21 @@ func (s *stubClient) Init(opts ...client.Option) error {
 		s.pool.Close()
 		// create new pool
 		s.pool = pool.NewPool(
-			pool.Size(s.opts.PoolSize),
-			pool.TTL(s.opts.PoolTTL),
-			pool.Transport(s.opts.Transport),
+			pool.Size(c.opts.PoolSize),
+			pool.TTL(c.opts.PoolTTL),
+			pool.Transport(c.opts.Transport),
 		)
 	}
 
 	return nil
 }
 
-func (s *stubClient) Options() client.Options {
+func (c *nodeClient) Options() client.Options {
 	return s.opts
 }
 
 //we will use static selector
-func (s *stubClient) next(request client.Request, opts client.CallOptions) (selector.Next, error) {
+func (c *nodeClient) next(request client.Request, opts client.CallOptions) (selector.Next, error) {
 
 	service := request.Service()
 
@@ -315,7 +310,7 @@ func (s *stubClient) next(request client.Request, opts client.CallOptions) (sele
 	return next, nil
 }
 
-func (s *stubClient) Call(ctx context.Context, request client.Request, response interface{}, opts ...client.CallOption) error {
+func (c *nodeClient) Call(ctx context.Context, request client.Request, response interface{}, opts ...client.CallOption) error {
 	// make a copy of call opts
 	callOpts := s.opts.CallOptions
 	for _, opt := range opts {
@@ -414,7 +409,7 @@ func (s *stubClient) Call(ctx context.Context, request client.Request, response 
 	return gerr
 }
 
-func (s *stubClient) Stream(ctx context.Context, request client.Request, opts ...client.CallOption) (client.Stream, error) {
+func (c *nodeClient) Stream(ctx context.Context, request client.Request, opts ...client.CallOption) (client.Stream, error) {
 	// make a copy of call opts
 	callOpts := s.opts.CallOptions
 	for _, opt := range opts {
@@ -498,18 +493,18 @@ func (s *stubClient) Stream(ctx context.Context, request client.Request, opts ..
 	return nil, grr
 }
 
-func (s *stubClient) Publish(ctx context.Context, msg client.Message, opts ...client.PublishOption) error {
+func (c *nodeClient) Publish(ctx context.Context, msg client.Message, opts ...client.PublishOption) error {
 	return nil
 }
 
-func (s *stubClient) NewMessage(topic string, message interface{}, opts ...client.MessageOption) client.Message {
+func (c *nodeClient) NewMessage(topic string, message interface{}, opts ...client.MessageOption) client.Message {
 	return newMessage(topic, message, s.opts.ContentType, opts...)
 }
 
-func (s *stubClient) NewRequest(service, method string, request interface{}, reqOpts ...client.RequestOption) client.Request {
+func (c *nodeClient) NewRequest(service, method string, request interface{}, reqOpts ...client.RequestOption) client.Request {
 	return newRequest(service, method, request, s.opts.ContentType, reqOpts...)
 }
 
-func (s *stubClient) String() string {
-	return "stubClient"
+func (c *nodeClient) String() string {
+	return "nodeclient"
 }

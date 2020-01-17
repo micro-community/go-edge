@@ -16,7 +16,7 @@ import (
 	"github.com/micro/go-micro/util/socket"
 )
 
-type stubServer struct {
+type nodeServer struct {
 	router   *Routing
 	opts     server.Options
 	handlers map[string]server.Handler
@@ -51,7 +51,7 @@ func NewServer(opts ...server.Option) server.Server {
 	options := newOption(opts...)
 	router := DefaultRouter()
 
-	return &stubServer{
+	return &nodeServer{
 		opts:     options,
 		router:   router,
 		handlers: make(map[string]server.Handler),
@@ -61,7 +61,7 @@ func NewServer(opts ...server.Option) server.Server {
 }
 
 // ServeConn serves a single connection
-func (s *stubServer) ServeConn(sock transport.Socket) {
+func (s *nodeServer) ServeConn(sock transport.Socket) {
 	defer func() {
 		// close socket
 		sock.Close()
@@ -200,7 +200,7 @@ func (s *stubServer) ServeConn(sock transport.Socket) {
 }
 
 //newCodec return codec for message.
-func (s *stubServer) newCodec(contentType string, socket *socket.Socket) codec.Codec {
+func (s *nodeServer) newCodec(contentType string, socket *socket.Socket) codec.Codec {
 	if cf, ok := s.opts.Codecs[contentType]; ok {
 		return newBuffCodec(socket, cf)
 	}
@@ -209,11 +209,11 @@ func (s *stubServer) newCodec(contentType string, socket *socket.Socket) codec.C
 	return newBuffCodec(socket, xmlc.DefaultCodecs[contentType])
 }
 
-func (s *stubServer) Options() server.Options {
+func (s *nodeServer) Options() server.Options {
 	return s.opts
 }
 
-func (s *stubServer) Init(opts ...server.Option) error {
+func (s *nodeServer) Init(opts ...server.Option) error {
 	s.Lock()
 	for _, opt := range opts {
 		opt(&s.opts)
@@ -222,11 +222,11 @@ func (s *stubServer) Init(opts ...server.Option) error {
 	return nil
 }
 
-func (s *stubServer) NewHandler(h interface{}, opts ...server.HandlerOption) server.Handler {
+func (s *nodeServer) NewHandler(h interface{}, opts ...server.HandlerOption) server.Handler {
 	return s.router.NewHandler(h, opts...)
 }
 
-func (s *stubServer) Handle(h server.Handler) error {
+func (s *nodeServer) Handle(h server.Handler) error {
 	s.Lock()
 	defer s.Unlock()
 
@@ -239,25 +239,25 @@ func (s *stubServer) Handle(h server.Handler) error {
 	return nil
 }
 
-func (s *stubServer) NewSubscriber(topic string, sb interface{}, opts ...server.SubscriberOption) server.Subscriber {
+func (s *nodeServer) NewSubscriber(topic string, sb interface{}, opts ...server.SubscriberOption) server.Subscriber {
 	return nil
 }
 
-func (s *stubServer) Subscribe(sb server.Subscriber) error {
+func (s *nodeServer) Subscribe(sb server.Subscriber) error {
 	return nil
 }
 
 //Register useless here
-func (s *stubServer) Register() error {
+func (s *nodeServer) Register() error {
 	return nil
 }
 
 //Deregister useless here
-func (s *stubServer) Deregister() error {
+func (s *nodeServer) Deregister() error {
 	return nil
 }
 
-func (s *stubServer) Start() error {
+func (s *nodeServer) Start() error {
 	s.RLock()
 	if s.started {
 		s.RUnlock()
@@ -317,7 +317,7 @@ func (s *stubServer) Start() error {
 	return nil
 }
 
-func (s *stubServer) Stop() error {
+func (s *nodeServer) Stop() error {
 	s.RLock()
 	if !s.started {
 		s.RUnlock()
@@ -339,6 +339,6 @@ func (s *stubServer) Stop() error {
 	return err
 }
 
-func (s *stubServer) String() string {
-	return "stubServer"
+func (s *nodeServer) String() string {
+	return "nodeserver"
 }

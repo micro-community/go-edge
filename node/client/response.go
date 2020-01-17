@@ -2,7 +2,7 @@ package client
 
 import (
 	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/transport/tcp"
+	"github.com/micro/go-micro/transport"
 )
 
 type response struct {
