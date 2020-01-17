@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"fmt"
-	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -289,16 +288,6 @@ func (c *nodeClient) Options() client.Options {
 func (c *nodeClient) next(request client.Request, opts client.CallOptions) (selector.Next, error) {
 
 	service := request.Service()
-
-	// get proxy
-	if prx := os.Getenv("MICRO_PROXY"); len(prx) > 0 {
-		service = prx
-	}
-
-	// get proxy address
-	if prx := os.Getenv("MICRO_PROXY_ADDRESS"); len(prx) > 0 {
-		opts.Address = []string{prx}
-	}
 
 	// get next nodes from the selector
 	next, err := c.opts.Selector.Select(service, opts.SelectOptions...)

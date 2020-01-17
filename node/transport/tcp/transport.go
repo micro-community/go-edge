@@ -1,22 +1,21 @@
-
 //Package tcp provides a TCP transport
 package tcp
 
 import (
 	"bufio"
 	"crypto/tls"
-	"net"
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
 	mnet "github.com/micro/go-micro/util/net"
 	mls "github.com/micro/go-micro/util/tls"
+	"net"
 )
 
-
 type tcpTransport struct {
-	opts transport.Options
+	opts          transport.Options
+	dataExtractor nts.DataExtractor
 }
-
 
 func (t *tcpTransport) Dial(addr string, opts ...transport.DialOption) (transport.Client, error) {
 	dopts := transport.DialOptions{
@@ -118,6 +117,11 @@ func (t *tcpTransport) Init(opts ...transport.Option) error {
 	for _, o := range opts {
 		o(&t.opts)
 	}
+
+	if de, ok := deFromContext(t.opts.Context); ok {
+		t.dataExtractor = de
+	}
+
 	return nil
 }
 

@@ -4,22 +4,20 @@ package tcp
 import (
 	"bufio"
 	"errors"
+	nts "github.com/micro-community/x-edge/node/transport"
+	"github.com/micro/go-micro/transport"
 	"net"
 	"time"
-
-	"github.com/micro/go-micro/transport"
 )
-
 
 type tcpTransportSocket struct {
 	conn net.Conn
 	//	enc     *gob.Encoder
 	//	dec     *gob.Decoder
-	encBuf  *bufio.Writer
-	timeout time.Duration
+	encBuf        *bufio.Writer
+	timeout       time.Duration
+	dataExtractor nts.DataExtractor
 }
-
-
 
 func (t *tcpTransportSocket) Local() string {
 	return t.conn.LocalAddr().String()
@@ -42,7 +40,7 @@ func (t *tcpTransportSocket) Recv(m *transport.Message) error {
 	//scanner disconnected的错误
 	scanner := bufio.NewScanner(t.conn)
 
-	scanner.Split(dataExtractor)
+	scanner.Split(t.dataExtractor)
 
 	if scanner.Scan() {
 		m.Body = scanner.Bytes()
@@ -51,7 +49,6 @@ func (t *tcpTransportSocket) Recv(m *transport.Message) error {
 
 	return errorTransportDataExtract
 }
-
 
 func (t *tcpTransportSocket) Send(m *transport.Message) error {
 	// set timeout if its greater than 0

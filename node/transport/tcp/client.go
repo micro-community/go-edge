@@ -41,13 +41,6 @@ func (t *tcpTransportClient) Send(m *transport.Message) error {
 
 func (t *tcpTransportClient) Recv(m *transport.Message) error {
 	// set timeout if its greater than 0
-
-	if t.dialOpts.Context != nil && t.dataExtractor == nil {
-		if v := t.dialOpts.Context.Value(nts.DataExtractorFuncKey{}); v != nil {
-			t.dataExtractor = v.(nts.DataExtractor)
-		}
-	}
-
 	if m == nil {
 		return errors.New("message passed in is nil")
 	}
