@@ -4,13 +4,13 @@ import (
 	"context"
 	"github.com/micro/go-micro/transport"
 
-	nts "github.com/micro-community/x-edge/node/transpot"
+	nts "github.com/micro-community/x-edge/node/transport"
 )
 
 type dataExtractorFunc struct{}
 
-// Extractor should be used to setup a extractor
-func Extractor(dex nts.DataExtractor) transport.Option {
+// WithExtractor should be used to setup a extractor
+func WithExtractor(dex nts.DataExtractor) transport.Option {
 	return func(o *transport.Options) {
 		if o.Context == nil {
 			o.Context = context.Background()

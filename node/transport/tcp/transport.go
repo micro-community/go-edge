@@ -5,17 +5,19 @@ package tcp
 import (
 	"bufio"
 	"crypto/tls"
-	"errors"
 	"net"
-	"time"
-	
-	"github.com/micro/go-micro/config/cmd"
 	"github.com/micro/go-micro/transport"
 	maddr "github.com/micro/go-micro/util/addr"
-	"github.com/micro/go-micro/util/log"
 	mnet "github.com/micro/go-micro/util/net"
 	mls "github.com/micro/go-micro/util/tls"
 )
+
+
+type tcpTransport struct {
+	opts transport.Options
+}
+
+
 func (t *tcpTransport) Dial(addr string, opts ...transport.DialOption) (transport.Client, error) {
 	dopts := transport.DialOptions{
 		Timeout: transport.DefaultDialTimeout,
