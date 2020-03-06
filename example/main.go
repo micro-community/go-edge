@@ -83,7 +83,8 @@ func main() {
 	//config.XMicroEdgeServiceTransport
 	//config.XMicroEdgeServiceAddr
 
-	edge.RunProc()
+	srv := edge.NewService()
+	srv.Run()
 
 	// Run service
 	if err := service.Run(); err != nil {

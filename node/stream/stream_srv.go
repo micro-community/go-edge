@@ -51,7 +51,7 @@ func (r *streamServer) Send(msg interface{}) error {
 		Target:   r.request.Service(),
 		Method:   r.request.Method(),
 		Endpoint: r.request.Endpoint(),
-		ID:       r.id,
+		Id:       r.id,
 		Type:     codec.Response,
 	}
 
@@ -91,7 +91,7 @@ func (r *streamServer) Recv(msg interface{}) error {
 	}
 
 	// we need to stay up to date with sequence numbers
-	r.id = req.ID
+	r.id = req.Id
 	if err := r.codec.ReadBody(msg); err != nil {
 		r.err = err
 		return err

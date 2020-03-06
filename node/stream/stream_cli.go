@@ -87,7 +87,7 @@ func (r *streamClient) Send(msg interface{}) error {
 	}
 
 	req := codec.Message{
-		ID:       r.id,
+		Id:       r.id,
 		Target:   r.request.Service(),
 		Method:   r.request.Method(),
 		Endpoint: r.request.Endpoint(),
@@ -161,7 +161,7 @@ func (r *streamClient) Close() error {
 		if r.sendEOS {
 			// no need to check for error
 			r.codec.Write(&codec.Message{
-				ID:       r.id,
+				Id:       r.id,
 				Target:   r.request.Service(),
 				Method:   r.request.Method(),
 				Endpoint: r.request.Endpoint(),
