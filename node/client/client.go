@@ -7,8 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/transport"
-	"github.com/micro/go-micro/v2/util/log"
 
 	xmlc "github.com/micro-community/x-edge/node/codec"
 	"github.com/micro-community/x-edge/node/stream"

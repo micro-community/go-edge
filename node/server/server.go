@@ -9,10 +9,10 @@ import (
 	xmlc "github.com/micro-community/x-edge/node/codec"
 
 	"github.com/micro/go-micro/v2/codec"
+	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/metadata"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/transport"
-	log "github.com/micro/go-micro/v2/util/log"
 	"github.com/micro/go-micro/v2/util/socket"
 )
 
@@ -67,8 +67,8 @@ func (s *nodeServer) ServeConn(sock transport.Socket) {
 		sock.Close()
 
 		if r := recover(); r != nil {
-			log.Log("panic recovered: ", r)
-			log.Log(string(debug.Stack()))
+			log.Info("panic recovered: ", r)
+			log.Info(string(debug.Stack()))
 		}
 	}()
 
@@ -185,7 +185,7 @@ func (s *nodeServer) ServeConn(sock transport.Socket) {
 			defer psock.Close()
 			// serve the actual request using the request router
 			if err := s.router.ServeRequest(ctx, rqst, resp); err != nil {
-				log.Logf("unable to write error response: %v", err)
+				log.Infof("unable to write error response: %v", err)
 			}
 			mtx.Lock()
 			delete(sockets, id)
@@ -273,7 +273,7 @@ func (s *nodeServer) Start() error {
 		return err
 	}
 
-	log.Logf("Transport [%s] Listening on %s", config.Transport.String(), ts.Addr())
+	log.Infof("Transport [%s] Listening on %s", config.Transport.String(), ts.Addr())
 
 	// swap address
 	//s.Lock()
@@ -298,7 +298,7 @@ func (s *nodeServer) Start() error {
 			// check the error and backoff
 			default:
 				if err != nil {
-					log.Logf("Accept error: %v", err)
+					log.Infof("Accept error: %v", err)
 					time.Sleep(time.Second)
 					continue
 				}

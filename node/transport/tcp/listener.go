@@ -7,8 +7,8 @@ import (
 	"time"
 
 	nts "github.com/micro-community/x-edge/node/transport"
+	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/transport"
-	"github.com/micro/go-micro/v2/util/log"
 )
 
 type tcpTransportListener struct {
@@ -40,7 +40,7 @@ func (t *tcpTransportListener) Accept(fn func(transport.Socket)) error {
 				if max := 1 * time.Second; tempDelay > max {
 					tempDelay = max
 				}
-				log.Logf("http: Accept error: %v; retrying in %v\n", err, tempDelay)
+				log.Infof("http: Accept error: %v; retrying in %v\n", err, tempDelay)
 				time.Sleep(tempDelay)
 				continue
 			}

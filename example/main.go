@@ -9,8 +9,8 @@ import (
 	"github.com/micro-community/x-edge/handler"
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 	_ "github.com/micro-community/x-edge/subscriber"
-	cli "github.com/micro/cli/v2"
-	micro "github.com/micro/go-micro/v2"
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2"
 	log "github.com/micro/go-micro/v2/logger"
 )
 

@@ -8,7 +8,7 @@ import (
 	_ "github.com/micro/go-micro/v2/broker"
 
 	"github.com/micro/go-micro/v2/codec"
-	"github.com/micro/go-micro/v2/util/log"
+	log "github.com/micro/go-micro/v2/logger"
 
 	eventbroker "github.com/micro-community/x-edge/broker"
 
@@ -66,7 +66,7 @@ func (e *ProtocolServer) createProtocMsg(protocolInfo ProtocolPackge) (msg proto
 func (e *ProtocolServer) Event(ctx context.Context, req *codec.Message, resp *codec.Message) error {
 
 	logstr := string(req.Body[:])
-	log.Log("[Received Protocol Event request]:", logstr)
+	log.Info("[Received Protocol Event request]:", logstr)
 
 	//unpackage from xml to ProtocolPackge
 	ProtocolPackge, err := e.unpackage(req.Body)

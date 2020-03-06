@@ -5,8 +5,8 @@ import (
 	"net"
 	"time"
 
+	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/transport"
-	"github.com/micro/go-micro/v2/util/log"
 )
 
 //　　UDP : 1500 - IP(20) - UDP(8) = 1472(Bytes)
@@ -39,7 +39,7 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 				if max := 1 * time.Second; tempDelay > max {
 					tempDelay = max
 				}
-				log.Logf("udp: Accept error: %v; retrying in %v\n", err, tempDelay)
+				log.Infof("udp: Accept error: %v; retrying in %v\n", err, tempDelay)
 				time.Sleep(tempDelay)
 				continue
 			}
