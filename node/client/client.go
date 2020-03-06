@@ -7,17 +7,17 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/micro/go-micro/transport"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/transport"
+	"github.com/micro/go-micro/v2/util/log"
 
 	xmlc "github.com/micro-community/x-edge/node/codec"
 	"github.com/micro-community/x-edge/node/stream"
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/client/pool"
-	"github.com/micro/go-micro/client/selector"
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/errors"
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/client/pool"
+	"github.com/micro/go-micro/v2/client/selector"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/metadata"
 )
 
 type nodeClient struct {

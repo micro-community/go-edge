@@ -8,12 +8,12 @@ import (
 
 	xmlc "github.com/micro-community/x-edge/node/codec"
 
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/metadata"
-	"github.com/micro/go-micro/server"
-	"github.com/micro/go-micro/transport"
-	log "github.com/micro/go-micro/util/log"
-	"github.com/micro/go-micro/util/socket"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/metadata"
+	"github.com/micro/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/transport"
+	log "github.com/micro/go-micro/v2/util/log"
+	"github.com/micro/go-micro/v2/util/socket"
 )
 
 type nodeServer struct {

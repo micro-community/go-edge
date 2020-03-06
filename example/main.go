@@ -9,9 +9,9 @@ import (
 	"github.com/micro-community/x-edge/handler"
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 	_ "github.com/micro-community/x-edge/subscriber"
-	"github.com/micro/cli"
-	"github.com/micro/go-micro"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 //XEDGEADDR for target edge address

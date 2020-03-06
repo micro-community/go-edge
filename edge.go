@@ -5,9 +5,9 @@ import (
 
 	nclient "github.com/micro-community/x-edge/node/client"
 	nserver "github.com/micro-community/x-edge/node/server"
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/server"
-	"github.com/micro/go-micro/service"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/service"
 )
 
 //Default Config

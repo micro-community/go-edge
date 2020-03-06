@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/micro/go-micro/codec"
+	"github.com/micro/go-micro/v2/codec"
 )
 
 //DefaultCodecs default Codec

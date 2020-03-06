@@ -8,7 +8,7 @@ import (
 	"time"
 
 	nts "github.com/micro-community/x-edge/node/transport"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 type tcpTransportClient struct {

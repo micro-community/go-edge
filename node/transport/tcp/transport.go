@@ -5,10 +5,10 @@ import (
 	"bufio"
 	"crypto/tls"
 	nts "github.com/micro-community/x-edge/node/transport"
-	"github.com/micro/go-micro/transport"
-	maddr "github.com/micro/go-micro/util/addr"
-	mnet "github.com/micro/go-micro/util/net"
-	mls "github.com/micro/go-micro/util/tls"
+	"github.com/micro/go-micro/v2/transport"
+	maddr "github.com/micro/go-micro/v2/util/addr"
+	mnet "github.com/micro/go-micro/v2/util/net"
+	mls "github.com/micro/go-micro/v2/util/tls"
 	"net"
 )
 

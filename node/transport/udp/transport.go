@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"net"
 
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 func (u *udpTransport) Dial(addr string, opts ...transport.DialOption) (transport.Client, error) {

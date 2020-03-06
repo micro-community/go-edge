@@ -3,7 +3,7 @@ package subscriber
 import (
 	"context"
 
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/util/log"
 
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 )

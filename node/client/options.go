@@ -3,9 +3,9 @@ package client
 import (
 	"context"
 
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 var (

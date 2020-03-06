@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"errors"
 	nts "github.com/micro-community/x-edge/node/transport"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/transport"
 	"net"
 	"time"
 )

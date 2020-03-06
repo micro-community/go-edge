@@ -1,9 +1,9 @@
 package client
 
 import (
-	"github.com/micro/go-micro/client"
+	"github.com/micro/go-micro/v2/client"
 
-	"github.com/micro/go-micro/codec"
+	"github.com/micro/go-micro/v2/codec"
 )
 
 type request struct {

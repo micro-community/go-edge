@@ -2,7 +2,7 @@ package edge
 
 import (
 	nts "github.com/micro-community/x-edge/node/transport"
-	service "github.com/micro/go-micro/service"
+	service "github.com/micro/go-micro/v2/service"
 )
 
 // Options  of edge node serivices

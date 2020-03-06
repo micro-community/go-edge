@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/server"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 func newOptions(opt ...server.Option) server.Options {

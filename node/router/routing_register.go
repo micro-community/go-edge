@@ -3,8 +3,8 @@ package router
 import (
 	context "context"
 
-	"github.com/micro/go-micro/codec"
-	server "github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/v2/codec"
+	server "github.com/micro/go-micro/v2/server"
 )
 
 //some constant variable

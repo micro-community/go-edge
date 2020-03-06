@@ -3,8 +3,8 @@ package server
 import (
 	"reflect"
 
-	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/server"
 )
 
 type routingHandler struct {

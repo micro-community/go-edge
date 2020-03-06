@@ -3,10 +3,10 @@ package client
 import (
 	xmlc "github.com/micro-community/x-edge/node/codec"
 	"github.com/micro-community/x-edge/node/iobuffer"
-	"github.com/micro/go-micro/codec"
-	raw "github.com/micro/go-micro/codec/bytes"
-	"github.com/micro/go-micro/errors"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/codec"
+	raw "github.com/micro/go-micro/v2/codec/bytes"
+	"github.com/micro/go-micro/v2/errors"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 var (

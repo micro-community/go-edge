@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 
-	mconfig "github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/config/source/file"
+	mconfig "github.com/micro/go-micro/v2/config"
+	"github.com/micro/go-micro/v2/config/source/file"
 )
 
 //Sevice configuration and register

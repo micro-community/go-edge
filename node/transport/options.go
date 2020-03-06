@@ -2,7 +2,7 @@ package transport
 
 import (
 	"context"
-	"github.com/micro/go-micro/transport"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 // WithExtractor should be used to setup a extractor

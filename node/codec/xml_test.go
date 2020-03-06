@@ -3,7 +3,7 @@ package codec
 import (
 	"testing"
 
-	"github.com/micro/go-micro/codec"
+	"github.com/micro/go-micro/v2/codec"
 )
 
 var srcbytes = []byte(`<?xml version="1.0" encoding="gb2312"?>

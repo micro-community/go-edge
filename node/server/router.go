@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/server"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/server"
 )
 
 //Routing Config

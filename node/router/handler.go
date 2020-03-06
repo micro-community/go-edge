@@ -5,10 +5,10 @@ import (
 	"encoding/xml"
 	"regexp"
 
-	_ "github.com/micro/go-micro/broker"
+	_ "github.com/micro/go-micro/v2/broker"
 
-	"github.com/micro/go-micro/codec"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro/v2/codec"
+	"github.com/micro/go-micro/v2/util/log"
 
 	eventbroker "github.com/micro-community/x-edge/broker"
 
