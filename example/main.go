@@ -9,9 +9,9 @@ import (
 	"github.com/micro-community/x-edge/handler"
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 	_ "github.com/micro-community/x-edge/subscriber"
-	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/util/log"
+	cli "github.com/micro/cli/v2"
+	micro "github.com/micro/go-micro/v2"
+	log "github.com/micro/go-micro/v2/logger"
 )
 
 //XEDGEADDR for target edge address
@@ -24,49 +24,51 @@ func main() {
 	// New Service
 	service := micro.NewService(
 		//Select transport protocol (eg:tcp or udp) for XMicroEdgeService
-		micro.Flags(cli.StringFlag{
-			Name:   "XMicroEdgeServiceTransport",
-			Usage:  "tcp",
-			EnvVar: XEDGETRANSPORT,
-			//Value: "tcp"
-			Value: "ppp",
-		}),
-		//Set address for XMicroEdgeService 192.168.1.198:6600
-		micro.Flags(cli.StringFlag{
-			Name:   "XMicroEdgeServiceAddr",
-			Usage:  "format: 127.0.0.1:6600",
-			EnvVar: XEDGEADDR,
-			//Value:  "192.168.1.198:6600",
-			Value: "192.168.1.198:1234",
-		}),
+		micro.Flags(
+			&cli.StringFlag{
+				Name:    "XMicroEdgeServiceTransport",
+				Usage:   "tcp",
+				EnvVars: []string{XEDGETRANSPORT},
+				//Value: "tcp"
+				Value: "ppp",
+			},
+			&cli.StringFlag{
+				Name:    "XMicroEdgeServiceAddr",
+				Usage:   "format: 127.0.0.1:6600",
+				EnvVars: []string{XEDGEADDR},
+				//Value:  "192.168.1.198:6600",
+				Value: "192.168.1.198:1234",
+			},
+		),
 	)
 
 	// Initialise service
 	service.Init(
-		micro.Action(func(c *cli.Context) {
+		micro.Action(func(c *cli.Context) error {
 			if info := c.String("XMicroEdgeServiceTransport"); info != "" {
-				log.Log("XMicroEdgeServiceTransport:", info)
+				log.Info("XMicroEdgeServiceTransport:", info)
 				config.XMicroEdgeServiceTransport = info
 			} else {
 				if env := os.Getenv(XEDGETRANSPORT); len(env) > 0 {
-					log.Log(XEDGETRANSPORT, ":", env)
+					log.Info(XEDGETRANSPORT, ":", env)
 					config.XMicroEdgeServiceTransport = env
 				} else {
-					log.Log("default XMicroEdgeServiceTransport is tcp")
+					log.Info("default XMicroEdgeServiceTransport is tcp")
 				}
 			}
 
 			if info := c.String("XMicroEdgeServiceAddr"); info != "" {
-				log.Log("XMicroEdgeServiceAddr:", info)
+				log.Info("XMicroEdgeServiceAddr:", info)
 				config.XMicroEdgeServiceAddr = info
 			} else {
 				if env := os.Getenv(XEDGEADDR); len(env) > 0 {
-					log.Log(XEDGEADDR, ":", env)
+					log.Info(XEDGEADDR, ":", env)
 					config.XMicroEdgeServiceAddr = env
 				} else {
-					log.Log("default XMicroEdgeServiceAddr is 192.168.1.198:6600")
+					log.Info("default XMicroEdgeServiceAddr is 192.168.1.198:6600")
 				}
 			}
+			return nil
 		}),
 	)
 
