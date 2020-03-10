@@ -17,19 +17,18 @@ It supports raw tcp/udp and http in future.
 
 ![components](docs/images/Struct.png)
 
-
 + Edge结构取消了go-micro中的Registry、Broker、Selector，保留了Client、Server、Transport和Codec
 
 ## Data Flow
 
 ![dataflow](docs/images/data%20flow.png)
 
-
 + 启动流程: go-micro  启动----> x-edge 启动--->x-edge监听---> go-micro 监听
 + transport从device（client端）收到tcp或者udp数据包（数据包格式可以自定义，默认是xml），调用edgeServer
 + edgeServer通过Codec解码，并通过router，找到相应的handler
 + 在service的handler中，处理相应的业务message proc
 + 在message proc可以调用其他Service的broker或者rpc，将数据send出去。同时，也可以通过edgeClient回复数据包给device（client端）
++ 在私有数据包解码过程中，须要基于某个能识别的字段或者类型，定义数据包和hanler的映射关系,比如：`<evt>`数据包映射到名为`evthandle`的函数处理过程。
 
 ## Important
 

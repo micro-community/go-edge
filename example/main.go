@@ -26,14 +26,14 @@ func main() {
 		//Select transport protocol (eg:tcp or udp) for XMicroEdgeService
 		micro.Flags(
 			&cli.StringFlag{
-				Name:    "XMicroEdgeServiceTransport",
+				Name:    XEDGETRANSPORT,
 				Usage:   "tcp",
 				EnvVars: []string{XEDGETRANSPORT},
 				//Value: "tcp"
 				Value: "ppp",
 			},
 			&cli.StringFlag{
-				Name:    "XMicroEdgeServiceAddr",
+				Name:    XEDGEADDR,
 				Usage:   "format: 127.0.0.1:6600",
 				EnvVars: []string{XEDGEADDR},
 				//Value:  "192.168.1.198:6600",
@@ -45,7 +45,7 @@ func main() {
 	// Initialise service
 	service.Init(
 		micro.Action(func(c *cli.Context) error {
-			if info := c.String("XMicroEdgeServiceTransport"); info != "" {
+			if info := c.String(XEDGETRANSPORT); info != "" {
 				log.Info("XMicroEdgeServiceTransport:", info)
 				config.XMicroEdgeServiceTransport = info
 			} else {
@@ -57,7 +57,7 @@ func main() {
 				}
 			}
 
-			if info := c.String("XMicroEdgeServiceAddr"); info != "" {
+			if info := c.String(XEDGEADDR); info != "" {
 				log.Info("XMicroEdgeServiceAddr:", info)
 				config.XMicroEdgeServiceAddr = info
 			} else {
