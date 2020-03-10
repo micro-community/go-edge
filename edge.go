@@ -6,6 +6,7 @@ import (
 	nclient "github.com/micro-community/x-edge/node/client"
 	nserver "github.com/micro-community/x-edge/node/server"
 	"github.com/micro/go-micro/v2/client"
+	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/service"
 )
@@ -83,6 +84,9 @@ func (s *edgeService) Start() error {
 }
 
 func (s *edgeService) Run() error {
+
+	log.Init(log.WithFields(map[string]interface{}{"service": "edge"}))
+
 	if err := s.Start(); err != nil {
 		return err
 	}
