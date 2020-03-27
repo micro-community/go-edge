@@ -45,6 +45,7 @@ func (s *edgeService) Init(opts ...service.Option) {
 	for _, o := range opts {
 		o(&s.opts)
 	}
+
 }
 
 func (s *edgeService) String() string {
