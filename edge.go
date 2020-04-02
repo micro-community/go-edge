@@ -87,6 +87,7 @@ func (s *edgeService) Start() error {
 	return nil
 }
 
+//Run edge service
 func (s *edgeService) Run() error {
 
 	log.Init(log.WithFields(map[string]interface{}{"service": "edge"}))
