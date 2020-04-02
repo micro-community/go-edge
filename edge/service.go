@@ -1,6 +1,8 @@
 package edge
 
 import (
+	"sync"
+
 	nclient "github.com/micro-community/x-edge/node/client"
 	nserver "github.com/micro-community/x-edge/node/server"
 	"github.com/micro/go-micro/v2"
@@ -10,15 +12,18 @@ import (
 )
 
 type service struct {
-	opts    service.Options
-	service micro.Service
+	opts Options
+	sync.Mutex
+	running bool
+	static  bool
+	exit    chan chan error
 }
 
 func newService(opts ...Option) Service {
 	options := service.NewOptions(opts...)
 	return &service{
-		opts:    options,
-		service: micro.NewService(),
+		opts:   options,
+		static: true,
 	}
 }
 
@@ -121,7 +126,7 @@ func (s *edgeService) MicroService() micro.Service {
 }
 
 // NewService returns a new web.Service
-func NewService(opts ...service.Option) service.Service {
+func NewService(opts ...service.Option) Service {
 
 	// our grpc client
 	c := nclient.NewClient()

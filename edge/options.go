@@ -10,14 +10,13 @@ import (
 	"github.com/micro/go-micro/v2"
 
 	nts "github.com/micro-community/x-edge/node/transport"
-	service "github.com/micro/go-micro/v2/service"
 )
 
 //Options for edge Service
 type Options struct {
 	Name      string
 	Version   string
-	Id        string
+	ID        string
 	Metadata  map[string]string
 	Address   string
 	Advertise string
@@ -66,10 +65,7 @@ func newOptions(opts ...Option) Options {
 	for _, o := range opts {
 		o(&opt)
 	}
-
-	if opt.RegisterCheck == nil {
-		opt.RegisterCheck = DefaultRegisterCheck
-	}
+	newOptions
 
 	return opt
 }
@@ -91,10 +87,10 @@ func Icon(ico string) Option {
 	}
 }
 
-// Id Unique server id
-func Id(id string) Option {
+// ID Unique server id
+func ID(id string) Option {
 	return func(o *Options) {
-		o.Id = id
+		o.ID = id
 	}
 }
 
@@ -142,7 +138,7 @@ func RegisterTTL(t time.Duration) Option {
 	}
 }
 
-// Register the service with at interval
+// RegisterInterval Register the service with at interval
 func RegisterInterval(t time.Duration) Option {
 	return func(o *Options) {
 		o.RegisterInterval = t
@@ -238,7 +234,7 @@ func HandleSignal(b bool) Option {
 // Options  of edge node serivices
 
 //WithExtractor edge message
-func WithExtractor(de nts.DataExtractor) service.Option {
+func WithExtractor(de nts.DataExtractor) Option {
 	return func(o *Options) {
 		o.Transport.Init(nts.WithExtractor(de))
 	}
