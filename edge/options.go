@@ -6,14 +6,18 @@ import (
 	"net/http"
 	"time"
 
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
-
-	nts "github.com/micro-community/x-edge/node/transport"
+	"github.com/micro/go-micro/v2/auth"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/server"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 //Options for edge Service
 type Options struct {
+	//	service.Options //inherit from service
 	Name      string
 	Version   string
 	ID        string
@@ -21,13 +25,19 @@ type Options struct {
 	Address   string
 	Advertise string
 
-	Action func(*cli.Context)
-	Flags  []cli.Flag
+	Auth   auth.Auth
+	Client client.Client
+	Server server.Server
+
+	Transport transport.Transport
+	Action    func(*cli.Context)
+	Flags     []cli.Flag
 
 	RegisterTTL      time.Duration
 	RegisterInterval time.Duration
 
-	Server  *http.Server
+	Server *http.Server
+
 	Handler http.Handler
 
 	// Alternative Options
@@ -42,9 +52,6 @@ type Options struct {
 	AfterStart  []func() error
 	AfterStop   []func() error
 
-	// Static directory
-	StaticDir string
-
 	Signal bool
 }
 
@@ -52,7 +59,7 @@ func newOptions(opts ...Option) Options {
 	opt := Options{
 		Name:             DefaultName,
 		Version:          DefaultVersion,
-		Id:               DefaultId,
+		ID:               DefaultId,
 		Address:          DefaultAddress,
 		RegisterTTL:      DefaultRegisterTTL,
 		RegisterInterval: DefaultRegisterInterval,
@@ -65,7 +72,6 @@ func newOptions(opts ...Option) Options {
 	for _, o := range opts {
 		o(&opt)
 	}
-	newOptions
 
 	return opt
 }
