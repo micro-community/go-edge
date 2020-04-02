@@ -5,6 +5,7 @@ import (
 
 	nclient "github.com/micro-community/x-edge/node/client"
 	nserver "github.com/micro-community/x-edge/node/server"
+	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client"
 	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
@@ -23,13 +24,15 @@ var (
 )
 
 type edgeService struct {
-	opts service.Options
+	opts    service.Options
+	service micro.Service
 }
 
 func newService(opts ...service.Option) service.Service {
 	options := service.NewOptions(opts...)
 	return &edgeService{
-		opts: options,
+		opts:    options,
+		service: micro.NewService(),
 	}
 }
 
@@ -118,6 +121,19 @@ func (s *edgeService) Stop() error {
 	}
 
 	return gerr
+}
+
+// MicroService sets the micro.Service used internally
+// Options is not service.Options in type edgeService struct
+// we should rebuild the Options
+//func (s *edgeService) MicroService(s micro.Service) micro.Service {
+// return func(o *Options) {
+// 	o.Service = s
+// }
+//}
+// return micro.service
+func (s *edgeService) MicroService() micro.Service {
+	return s.service
 }
 
 // NewService returns a new web.Service
