@@ -1,4 +1,4 @@
-package service
+package edge
 
 import (
 	"context"
@@ -27,9 +27,6 @@ type Options struct {
 
 	RegisterTTL      time.Duration
 	RegisterInterval time.Duration
-
-	// RegisterCheck runs a check function before registering the service
-	RegisterCheck func(context.Context) error
 
 	Server  *http.Server
 	Handler http.Handler
@@ -77,7 +74,7 @@ func newOptions(opts ...Option) Options {
 	return opt
 }
 
-// Server name
+// Name Server name
 func Name(n string) Option {
 	return func(o *Options) {
 		o.Name = n
@@ -94,7 +91,7 @@ func Icon(ico string) Option {
 	}
 }
 
-// Unique server id
+// Id Unique server id
 func Id(id string) Option {
 	return func(o *Options) {
 		o.Id = id
@@ -122,7 +119,7 @@ func Address(a string) Option {
 	}
 }
 
-// The address to advertise for discovery - host:port
+// Advertise The address to advertise for discovery - host:port
 func Advertise(a string) Option {
 	return func(o *Options) {
 		o.Advertise = a
@@ -138,7 +135,7 @@ func Context(ctx context.Context) Option {
 	}
 }
 
-// Register the service with a TTL
+// RegisterTTL the service with a TTL
 func RegisterTTL(t time.Duration) Option {
 	return func(o *Options) {
 		o.RegisterTTL = t
@@ -152,12 +149,14 @@ func RegisterInterval(t time.Duration) Option {
 	}
 }
 
+// Handler binding
 func Handler(h http.Handler) Option {
 	return func(o *Options) {
 		o.Handler = h
 	}
 }
 
+// Server to use a customer Server
 func Server(srv *http.Server) Option {
 	return func(o *Options) {
 		o.Server = srv

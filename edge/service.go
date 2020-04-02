@@ -1,4 +1,4 @@
-package service
+package edge
 
 import (
 	nclient "github.com/micro-community/x-edge/node/client"
@@ -7,17 +7,16 @@ import (
 	"github.com/micro/go-micro/v2/client"
 	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
-	"github.com/micro/go-micro/v2/service"
 )
 
-type edgeService struct {
+type service struct {
 	opts    service.Options
 	service micro.Service
 }
 
-func newService(opts ...service.Option) service.Service {
+func newService(opts ...Option) Service {
 	options := service.NewOptions(opts...)
-	return &edgeService{
+	return &service{
 		opts:    options,
 		service: micro.NewService(),
 	}

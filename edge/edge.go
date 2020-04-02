@@ -1,9 +1,7 @@
-package service
+package edge
 
 // Service is a edge service to connect to device/gw/controller/box
 import (
-	"errors"
-
 	"net/http" //here should edge internal logic
 
 	"github.com/micro/go-micro/v2/logger"
@@ -27,8 +25,10 @@ var (
 	DefaultName    = "x-edge-srv"
 	DefaultAddress = ":8000"
 
+	NoExtractorDefined = New("No Extractor Defined")
+
 	DefaultExtractor = func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-		return -1, nil, errors.New("No Extractor Defined")
+		return -1, nil, NoExtractorDefined
 	}
 
 	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge"})
