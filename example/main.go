@@ -20,7 +20,6 @@ var (
 )
 
 func main() {
-
 	// Register Handler
 	//protocol.RegisterProtocolHandler(service.Server(), new(handler.Protocol))
 	// Register Subscriber
@@ -28,6 +27,7 @@ func main() {
 
 	// Register Publisher
 	//eventbroker.RegisterMessagePublisher(service)
+
 	srv := edge.NewService()
 
 	srv.Init()
