@@ -30,7 +30,7 @@ type Option func(o *Options)
 
 //service metadata
 var (
-	DefaultName           = "x-edge-srv"
+	DefaultName           = "x-edge-node"
 	DefaultVersion        = "latest"
 	DefaultAddress        = ":8000"
 	DefaultID             = uuid.New().String()
