@@ -28,6 +28,8 @@ func newService(opts ...Option) Service {
 
 	options := newOptions(opts...)
 	// service name
+	// options.Server is empty, so it is crash
+	// we should new options.Server  first  
 	serviceName := options.Server.Options().Name
 
 	// TODO: better accessors
