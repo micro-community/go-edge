@@ -36,8 +36,6 @@ type Options struct {
 	RegisterTTL      time.Duration
 	RegisterInterval time.Duration
 
-	Server *http.Server
-
 	Handler http.Handler
 
 	// Alternative Options
@@ -57,16 +55,13 @@ type Options struct {
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
-		Name:             DefaultName,
-		Version:          DefaultVersion,
-		ID:               DefaultId,
-		Address:          DefaultAddress,
-		RegisterTTL:      DefaultRegisterTTL,
-		RegisterInterval: DefaultRegisterInterval,
-		StaticDir:        DefaultStaticDir,
-		Service:          micro.NewService(),
-		Context:          context.TODO(),
-		Signal:           true,
+		Name:    DefaultName,
+		Version: DefaultVersion,
+		ID:      DefaultID,
+		Address: DefaultAddress,
+		Service: micro.NewService(),
+		Context: context.TODO(),
+		Signal:  true,
 	}
 
 	for _, o := range opts {
@@ -159,7 +154,7 @@ func Handler(h http.Handler) Option {
 }
 
 // Server to use a customer Server
-func Server(srv *http.Server) Option {
+func Server(srv server.Server) Option {
 	return func(o *Options) {
 		o.Server = srv
 	}

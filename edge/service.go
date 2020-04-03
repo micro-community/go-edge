@@ -26,13 +26,12 @@ type service struct {
 
 func newService(opts ...Option) Service {
 
+	options := newOptions(opts...)
 	// service name
 	serviceName := options.Server.Options().Name
 
-	options := newOptions(opts...)
-
 	// TODO: better accessors
-	authFn := func() auth.Auth { return service.opts.Auth }
+	authFn := func() auth.Auth { return options.Auth }
 
 	// wrap client to inject From-Service header on any calls
 	options.Client = wrapper.FromService(serviceName, options.Client, authFn)
@@ -51,7 +50,7 @@ func (s *service) Name() string {
 // Init initialises options. Additionally it calls cmd.Init
 // which parses command line flags. cmd.Init is only called
 // on first Init.
-func (s *service) Init(opts ...Option) {
+func (s *service) Init(opts ...Option) error {
 	// process options
 	for _, o := range opts {
 		o(&s.opts)
@@ -93,6 +92,7 @@ func (s *service) Init(opts ...Option) {
 		return nil
 	}))
 
+	return nil
 }
 
 func (s *service) String() string {
@@ -164,9 +164,6 @@ func (s *service) Run() error {
 		}
 	}
 
-	// exit reg loop
-	close(ex)
-
 	return s.Stop()
 }
 
@@ -207,5 +204,5 @@ func (s *service) Stop() error {
 
 // return micro.service
 func (s *service) MicroService() micro.Service {
-	return s.service
+	return s.Options().Service
 }
