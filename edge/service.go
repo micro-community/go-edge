@@ -14,6 +14,9 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/util/wrapper"
+
+	_ "github.com/micro-community/x-edge/node/client"
+	nserver "github.com/micro-community/x-edge/node/server"
 )
 
 type service struct {
@@ -29,7 +32,9 @@ func newService(opts ...Option) Service {
 	options := newOptions(opts...)
 	// service name
 	// options.Server is empty, so it is crash
-	// we should new options.Server  first  
+	// we should new options.Server  first
+	options.Server = nserver.NewServer()
+
 	serviceName := options.Server.Options().Name
 
 	// TODO: better accessors
