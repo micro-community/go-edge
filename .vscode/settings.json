@@ -20,4 +20,5 @@
     "sideBar.border": "#759570",
     "editorGroup.border": "#759570"
   },
+  "go.testFlags": ["-v"]
 }
