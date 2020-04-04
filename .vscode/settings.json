@@ -20,5 +20,11 @@
     "sideBar.border": "#759570",
     "editorGroup.border": "#759570"
   },
-  "go.testFlags": ["-v"]
+  "go.testFlags": ["-v"],
+
+  "cSpell.allowCompoundWords": true,
+
+  "go.formatTool": "goimports",
+  "go.useLanguageServer": true,
 }
+
