@@ -1,7 +1,7 @@
 package main
 
 import (
-	edge "github.com/micro-community/x-edge"
+	edge "github.com/micro-community/x-edge/edge"
 	//	_ "github.com/micro-community/x-edge/subscriber"
 
 	log "github.com/micro/go-micro/v2/logger"
