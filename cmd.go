@@ -25,12 +25,12 @@ func Init(options ...micro.Option) {
 	)
 }
 
-// Setup sets up a cli.App
+// Setup a cli.App
 func Setup(app *ccli.App, options ...micro.Option) {
-	// Add the various commands
 
+	// Add the various commands,
+	// only plugin for edge
 	app.Commands = append(app.Commands, build.Commands()...)
-	app.Commands = append(app.Commands, config.Commands(options...)...)
 
 	setup(app)
 }

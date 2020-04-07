@@ -9,7 +9,7 @@ import (
 
 //basic metadata
 var (
-	Name         = "x-edge-service"
+	Name         = "x-edge-app"
 	Address      = ":8080"
 	Handler      = "meta"
 	Resolver     = "micro"
