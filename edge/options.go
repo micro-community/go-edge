@@ -55,12 +55,14 @@ type Options struct {
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
-		Name:    DefaultName,
-		Version: DefaultVersion,
-		ID:      DefaultID,
-		Address: DefaultAddress,
-		Service: micro.NewService(),
-		Context: context.TODO(),
+		Name:      DefaultName,
+		Version:   DefaultVersion,
+		ID:        DefaultID,
+		Address:   DefaultAddress,
+		Server:    DefaultServer,
+		Transport: DefaultTransport,
+		Service:   micro.NewService(),
+		Context:   context.TODO(),
 		Signal:  true,
 	}
 
@@ -238,5 +240,16 @@ func HandleSignal(b bool) Option {
 func WithExtractor(de nts.DataExtractor) Option {
 	return func(o *Options) {
 		o.Transport.Init(nts.WithExtractor(de))
+	}
+}
+
+// Transport sets the transport for the server
+// and the underlying components
+func Transport(t transport.Transport) Option {
+	return func(o *Options) {
+		o.Transport = t
+		// Update Client and Server
+		o.Client.Init(client.Transport(t))
+		o.Server.Init(server.Transport(t))
 	}
 }

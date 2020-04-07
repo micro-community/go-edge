@@ -5,6 +5,8 @@ import (
 	"errors"
 	//here should edge internal logic
 	"github.com/google/uuid"
+	nserver "github.com/micro-community/x-edge/node/server"
+	"github.com/micro-community/x-edge/node/transport/tcp"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
@@ -34,6 +36,8 @@ var (
 	DefaultVersion        = "latest"
 	DefaultAddress        = ":8000"
 	DefaultID             = uuid.New().String()
+	DefaultServer         = nserver.NewServer()
+	DefaultTransport      = tcp.NewTransport()
 	ErrNoExtractorDefined = errors.New("No Extractor Defined")
 
 	DefaultExtractor = func(data []byte, atEOF bool) (advance int, token []byte, err error) {
