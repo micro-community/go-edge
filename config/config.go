@@ -23,10 +23,10 @@ const (
 	EventSubscriberName = "x-micro-edge.subevent"
 )
 
-//ServiceName is the current srv MicroService Name
+//XMicroEdgeServiceTransport is the current srv MicroService Name
 var XMicroEdgeServiceTransport = "tcp"
 
-//XMicroEdge ip Addr
+//XMicroEdgeServiceAddr ip Addr
 var XMicroEdgeServiceAddr = "192.168.1.198:6600"
 
 //Database define our own Database Config

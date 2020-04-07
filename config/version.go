@@ -8,9 +8,9 @@ var (
 	GitTag    string
 	BuildDate string
 
-	name        = "x-edge"
-	description = "A go-micro edge server"
-	version     = "1.18.0"
+	Name        = "x-edge"
+	Description = "A go-micro edge server"
+	version     = "2.0.0"
 )
 
 //BuildVersion for framework
