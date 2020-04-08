@@ -12,7 +12,7 @@ import (
 	"github.com/micro/go-micro/v2/server"
 )
 
-// Service is a web service with service discovery built in
+// Service is a edge srv node running in edge process
 type Service interface {
 	Name() string
 	//	service.Service

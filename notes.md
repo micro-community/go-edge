@@ -2,7 +2,7 @@
 
 record something for x-edge
 
-## 当前学习使用web/service的结构，来改造x-edge
+## 使用web/service的框架结构，改造x-edge
 
 问题：
 + 按照web/service的结构，micro.Service的位置：type service struct -> opts Options -> Service  micro.Service

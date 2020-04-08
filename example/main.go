@@ -1,7 +1,8 @@
 package main
 
 import (
-	edge "github.com/micro-community/x-edge/edge"
+	//we should use this not x-edge/edge which is a internal service
+	edge "github.com/micro-community/x-edge"
 	//	_ "github.com/micro-community/x-edge/subscriber"
 
 	log "github.com/micro/go-micro/v2/logger"
