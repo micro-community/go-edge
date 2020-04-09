@@ -7,7 +7,6 @@ import (
 
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/server"
@@ -39,8 +38,6 @@ type Options struct {
 
 	// Alternative Options
 	Context context.Context
-
-	Service micro.Service
 
 	Secure      bool
 	TLSConfig   *tls.Config

@@ -10,13 +10,13 @@ import (
 )
 
 func init() {
-	// // setup the build plugin
-	plugin.Register(build.Flags())
+	initApp()
 }
 
-// Init initialised the command line
-func Init(options ...micro.Option) {
-	Setup(cmd.App(), options...)
+// initApp initialize edge app to do some basic config
+func initApp(options ...micro.Option) {
+
+	setupApp(cmd.App(), options...)
 
 	cmd.Init(
 		cmd.Name(config.Name),
@@ -25,11 +25,11 @@ func Init(options ...micro.Option) {
 	)
 }
 
-// Setup a edge App to boost
-func Setup(app *ccli.App, options ...micro.Option) {
+// setupEdgeApp a edge App to boost
+func setupApp(app *ccli.App, options ...micro.Option) {
 
 	// Add the various commands,
-	// only plugin for edge
+	// only plugin(medddile ware enabled) for edge
 	app.Commands = append(app.Commands, build.Commands()...)
 
 	setup(app)
@@ -98,6 +98,9 @@ func setup(app *ccli.App) {
 		}
 		if len(ctx.String("edge_host")) > 0 {
 			Host = ctx.String("edge_host")
+		}
+		if len(ctx.String("edge_transport")) > 0 {
+			Transport = ctx.String("edge_transport")
 		}
 
 		for _, p := range plugins {

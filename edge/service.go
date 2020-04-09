@@ -6,8 +6,6 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/debug/trace"
@@ -56,42 +54,6 @@ func (s *service) Init(opts ...Option) error {
 	for _, o := range opts {
 		o(&s.opts)
 	}
-
-	serviceOpts := []micro.Option{}
-
-	if len(s.opts.Flags) > 0 {
-		serviceOpts = append(serviceOpts, micro.Flags(s.opts.Flags...))
-	}
-	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
-
-		if name := ctx.String("server_name"); len(name) > 0 {
-			s.opts.Name = name
-		}
-
-		if ver := ctx.String("server_version"); len(ver) > 0 {
-			s.opts.Version = ver
-		}
-
-		if id := ctx.String("server_id"); len(id) > 0 {
-			s.opts.ID = id
-		}
-
-		if addr := ctx.String("server_address"); len(addr) > 0 {
-			s.opts.Address = addr
-		}
-
-		if adv := ctx.String("server_advertise"); len(adv) > 0 {
-			s.opts.Advertise = adv
-		}
-
-		if s.opts.Action != nil {
-			s.opts.Action(ctx)
-		}
-
-		s.opts.Service.Init(serviceOpts...)
-
-		return nil
-	}))
 
 	return nil
 }
@@ -201,9 +163,4 @@ func (s *service) Stop() error {
 	}
 
 	return <-ch
-}
-
-// return micro.service
-func (s *service) MicroService() micro.Service {
-	return s.Options().Service
 }
