@@ -29,7 +29,7 @@ func initApp(options ...micro.Option) {
 func setupApp(app *ccli.App, options ...micro.Option) {
 
 	// Add the various commands,
-	// only plugin(medddile ware enabled) for edge
+	// only plugin(middle ware enabled) for edge
 	app.Commands = append(app.Commands, build.Commands()...)
 
 	setup(app)

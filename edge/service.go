@@ -6,6 +6,8 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/debug/trace"
@@ -46,7 +48,7 @@ func (s *service) Name() string {
 	return s.opts.Server.Options().Name
 }
 
-// Init initialises options. Additionally it calls cmd.Init
+// Init initialize options. Additionally it calls cmd.Init
 // which parses command line flags. cmd.Init is only called
 // on first Init.
 func (s *service) Init(opts ...Option) error {
@@ -54,6 +56,33 @@ func (s *service) Init(opts ...Option) error {
 	for _, o := range opts {
 		o(&s.opts)
 	}
+
+	serviceOpts := []micro.Option{}
+
+	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
+		if len(ctx.String("edge_web_address")) > 0 {
+			s.opts.Address = ctx.String("edge_address")
+		}
+
+		if len(ctx.String("edge_host")) > 0 {
+			s.opts.Host = ctx.String("edge_host")
+		}
+		if name := ctx.String("transport"); len(name) > 0 && s.opts.Transport.String() != name {
+
+			if t, ok := s.opts.Transports[name]; ok {
+				s.opts.Transport = t()
+				// @todo need to update edge client and server...
+				s.opts.Client.Init(client.Transport(s.opts.Transport))
+				s.opts.Server.Init(server.Transport(s.opts.Transport))
+			}
+		}
+
+		if s.opts.Action != nil {
+			s.opts.Action(ctx)
+		}
+
+		return nil
+	}))
 
 	return nil
 }

@@ -87,25 +87,6 @@ func (e *edgeApp) Init(opts ...Option) error {
 
 	edgeOptions := []nedge.Option{}
 
-	edgeOptions = append(edgeOptions, nedge.Action(func(ctx *cli.Context) {
-		if len(ctx.String("edge_web_address")) > 0 {
-			e.opts.Address = ctx.String("edge_address")
-		}
-		if len(ctx.String("edge_namespace")) > 0 {
-			e.opts.Namespace = ctx.String("edge_namespace")
-		}
-		if len(ctx.String("edge_host")) > 0 {
-			Host = ctx.String("edge_host")
-		}
-		if name := ctx.String("transport"); len(name) > 0 && e.opts.EdgeTransport.String() != name {
-
-			if t, ok := e.opts.Transports[name]; ok {
-				e.opts.EdgeTransport = t()
-
-				// @todo need to update edge client and server...
-			}
-		}
-	}))
 	edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
 
 	e.opts.Edge.Init(edgeOptions...)

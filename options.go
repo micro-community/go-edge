@@ -32,8 +32,6 @@ type Options struct {
 
 	Edge nedge.Service
 
-	Transports map[string]func(...transport.Option) transport.Transport
-
 	//for edge server
 	EdgeTransport transport.Transport
 	EdgeHost      string
@@ -96,12 +94,5 @@ func Version(v string) Option {
 func EgTransport(et transport.Transport) Option {
 	return func(o *Options) {
 		o.EdgeTransport = et
-	}
-}
-
-//NewTransport return Newtransport func
-func NewTransport(name string, t func(...transport.Option) transport.Transport) Option {
-	return func(o *Options) {
-		o.Transports[name] = t
 	}
 }

@@ -15,8 +15,8 @@ import (
 //Options for edge Service
 type Options struct {
 	//	service.Options //inherit from service
-	Name string
-
+	Name      string
+	Host      string
 	ID        string
 	Metadata  map[string]string
 	Address   string
@@ -27,10 +27,13 @@ type Options struct {
 	Server server.Server
 
 	Transport transport.Transport
-	Action    func(*cli.Context)
-	Flags     []cli.Flag
+
+	Action func(*cli.Context)
+	Flags  []cli.Flag
 
 	//	Handler http.Handler
+
+	Transports map[string]func(...transport.Option) transport.Transport
 
 	// Alternative Options
 	Context context.Context
@@ -195,7 +198,7 @@ func HandleSignal(b bool) Option {
 	}
 }
 
-// Options  of edge node serivices
+// Options  of edge node services
 
 //WithExtractor edge message
 func WithExtractor(de nts.DataExtractor) Option {
@@ -212,5 +215,12 @@ func Transport(t transport.Transport) Option {
 		// Update Client and Server
 		o.Client.Init(client.Transport(t))
 		o.Server.Init(server.Transport(t))
+	}
+}
+
+//NewTransport return Newtransport func
+func NewTransport(name string, t func(...transport.Option) transport.Transport) Option {
+	return func(o *Options) {
+		o.Transports[name] = t
 	}
 }
