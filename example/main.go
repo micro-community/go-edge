@@ -3,6 +3,7 @@ package main
 import (
 	//we should use this not x-edge/edge which is a internal service
 	edge "github.com/micro-community/x-edge"
+	"github.com/micro-community/x-edge/node/transport/udp"
 
 	log "github.com/micro/go-micro/v2/logger"
 )
@@ -28,11 +29,11 @@ func main() {
 	// Register Publisher
 	//eventbroker.RegisterMessagePublisher(service)
 
-	srv := edge.NewService()
+	srv := edge.NewService(edge.EgTransport(udp.NewTransport()))
 
 	srv.Init()
 
-	// Run service
+	// Run servicent
 	if err := srv.Run(); err != nil {
 		log.Fatal(err)
 	}

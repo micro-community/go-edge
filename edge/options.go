@@ -3,7 +3,6 @@ package edge
 import (
 	"context"
 	"crypto/tls"
-	"time"
 
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
@@ -16,8 +15,8 @@ import (
 //Options for edge Service
 type Options struct {
 	//	service.Options //inherit from service
-	Name      string
-	Version   string
+	Name string
+
 	ID        string
 	Metadata  map[string]string
 	Address   string
@@ -31,9 +30,6 @@ type Options struct {
 	Action    func(*cli.Context)
 	Flags     []cli.Flag
 
-	RegisterTTL      time.Duration
-	RegisterInterval time.Duration
-
 	//	Handler http.Handler
 
 	// Alternative Options
@@ -46,14 +42,12 @@ type Options struct {
 	AfterStart  []func() error
 	AfterStop   []func() error
 
-	Signal    bool
-	Namespace string
+	Signal bool
 }
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
 		Name:      DefaultName,
-		Version:   DefaultVersion,
 		ID:        DefaultID,
 		Address:   DefaultAddress,
 		Server:    DefaultServer,
@@ -92,13 +86,6 @@ func ID(id string) Option {
 	}
 }
 
-// Version of the service
-func Version(v string) Option {
-	return func(o *Options) {
-		o.Version = v
-	}
-}
-
 // Metadata associated with the service
 func Metadata(md map[string]string) Option {
 	return func(o *Options) {
@@ -126,20 +113,6 @@ func Advertise(a string) Option {
 func Context(ctx context.Context) Option {
 	return func(o *Options) {
 		o.Context = ctx
-	}
-}
-
-// RegisterTTL the service with a TTL
-func RegisterTTL(t time.Duration) Option {
-	return func(o *Options) {
-		o.RegisterTTL = t
-	}
-}
-
-// RegisterInterval Register the service with at interval
-func RegisterInterval(t time.Duration) Option {
-	return func(o *Options) {
-		o.RegisterInterval = t
 	}
 }
 
@@ -239,12 +212,5 @@ func Transport(t transport.Transport) Option {
 		// Update Client and Server
 		o.Client.Init(client.Transport(t))
 		o.Server.Init(server.Transport(t))
-	}
-}
-
-//Namespace of edge server
-func Namespace(n string) Option {
-	return func(o *Options) {
-		o.Namespace = n
 	}
 }

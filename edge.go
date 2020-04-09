@@ -10,11 +10,10 @@ import (
 
 //basic metadata
 var (
-	Name         = "x-edge-app"
-	Address      = ":8000"
-	Transport    = "udp"
-	Host         = ":8080"
-	Namespace    = "x.edge"
+
+	//	Transport     = "udp"
+	Host = ":8080"
+	//  AppNamespace = "x.edge"
 	HeaderPrefix = "x-edge-"
 )
 
@@ -34,12 +33,12 @@ type edgeApp struct {
 }
 
 //NewService return a edge service application
-func NewService() Service {
+func NewService(opts ...Option) Service {
 
 	return nil
 }
 
-func (e *edgeApp) buildGoMicro() []micro.Option {
+func (e *edgeApp) buildGoMicroOption() []micro.Option {
 
 	serviceOpts := []micro.Option{}
 
@@ -84,28 +83,33 @@ func (e *edgeApp) Init(opts ...Option) error {
 		o(&e.opts)
 	}
 
-	serviceOpts := e.buildGoMicro()
-	microOptions := []nedge.Option{}
+	serviceOpts := e.buildGoMicroOption()
 
-	edgeOptions := append(microOptions, micro.Action(func(ctx *cli.Context) error {
+	edgeOptions := []nedge.Option{}
 
-		if len(ctx.String("edge_transport")) > 0 {
-			Name = ctx.String("edge_transport")
-		}
+	edgeOptions = append(edgeOptions, nedge.Action(func(ctx *cli.Context) {
 		if len(ctx.String("edge_web_address")) > 0 {
-			Address = ctx.String("edge_web_address")
+			e.opts.Address = ctx.String("edge_address")
 		}
 		if len(ctx.String("edge_namespace")) > 0 {
-			Namespace = ctx.String("namespace")
+			e.opts.Namespace = ctx.String("edge_namespace")
 		}
+		if len(ctx.String("edge_host")) > 0 {
+			Host = ctx.String("edge_host")
+		}
+		if name := ctx.String("transport"); len(name) > 0 && e.opts.EdgeTransport.String() != name {
 
-		if e.opts.Action != nil {
-			e.opts.Action(ctx)
+			if t, ok := e.opts.Transports[name]; ok {
+				e.opts.EdgeTransport = t()
+
+				// @todo need to update edge client and server...
+			}
 		}
-		return nil
 	}))
-	e.opts.Edge.Init()
-	e.opts.Service.Init(edgeOptions...)
+	edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
+
+	e.opts.Edge.Init(edgeOptions...)
+
 	e.opts.Service.Init(serviceOpts...)
 	return nil
 }
@@ -122,9 +126,9 @@ func (e *edgeApp) Run() error {
 	// }
 
 	// pass namespace and resolver through to the server as these are needed to perform auth
-	edgesrv := nedge.NewServer(nedge.Address(Address), nedge.Namespace(Namespace))
+	//edgesrv := nedge.NewServer(nedge.Address(Address))
 
-	if err := edgesrv.Run(); err != nil {
+	if err := e.opts.Edge.Run(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -133,7 +137,7 @@ func (e *edgeApp) Run() error {
 		log.Fatal(err)
 	}
 
-	if err := edgesrv.Stop(); err != nil {
+	if err := e.opts.Edge.Stop(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -142,5 +146,5 @@ func (e *edgeApp) Run() error {
 
 // return micro.service
 func (e *edgeApp) MicroService() micro.Service {
-	return e.Options().Service
+	return e.opts.Service
 }

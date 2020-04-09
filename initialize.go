@@ -90,19 +90,6 @@ func setup(app *ccli.App) {
 
 	app.Before = func(ctx *ccli.Context) error {
 
-		if len(ctx.String("edge_web_address")) > 0 {
-			Address = ctx.String("edge_address")
-		}
-		if len(ctx.String("edge_namespace")) > 0 {
-			Namespace = ctx.String("edge_namespace")
-		}
-		if len(ctx.String("edge_host")) > 0 {
-			Host = ctx.String("edge_host")
-		}
-		if len(ctx.String("edge_transport")) > 0 {
-			Transport = ctx.String("edge_transport")
-		}
-
 		for _, p := range plugins {
 			if err := p.Init(ctx); err != nil {
 				return err

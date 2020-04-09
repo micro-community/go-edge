@@ -8,11 +8,13 @@ import (
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 //Options of edge app
 type Options struct {
 	//Global Metadata
+	Namespace        string
 	Name             string
 	Version          string
 	ID               string
@@ -30,8 +32,10 @@ type Options struct {
 
 	Edge nedge.Service
 
+	Transports map[string]func(...transport.Option) transport.Transport
+
 	//for edge server
-	EdgeTransport string
+	EdgeTransport transport.Transport
 	EdgeHost      string
 
 	// Alternative Options
@@ -71,5 +75,33 @@ func MicroService(s micro.Service) Option {
 func MicroEdge(e nedge.Service) Option {
 	return func(o *Options) {
 		o.Edge = e
+	}
+}
+
+//Namespace of edge server
+func Namespace(n string) Option {
+	return func(o *Options) {
+		o.Namespace = n
+	}
+}
+
+// Version of the service
+func Version(v string) Option {
+	return func(o *Options) {
+		o.Version = v
+	}
+}
+
+// EgTransport of the edge
+func EgTransport(et transport.Transport) Option {
+	return func(o *Options) {
+		o.EdgeTransport = et
+	}
+}
+
+//NewTransport return Newtransport func
+func NewTransport(name string, t func(...transport.Option) transport.Transport) Option {
+	return func(o *Options) {
+		o.Transports[name] = t
 	}
 }
