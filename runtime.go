@@ -25,7 +25,7 @@ func Init(options ...micro.Option) {
 	)
 }
 
-// Setup a cli.App
+// Setup a edge App to boost
 func Setup(app *ccli.App, options ...micro.Option) {
 
 	// Add the various commands,
@@ -44,18 +44,23 @@ func setup(app *ccli.App) {
 			Usage: "Enable local only development: Defaults to true.",
 		},
 		&ccli.StringFlag{
-			Name:    "edge_address",
+			Name:    "edge_web_address",
 			Usage:   "Set the edge UI address e.g 0.0.0.0:8082",
 			EnvVars: []string{"EDGE_WEB_ADDRESS"},
 		},
 		&ccli.StringFlag{
+			Name:    "edge_host",
+			Usage:   "Set the edge host e.g localhost:800",
+			EnvVars: []string{"EDGE_HOST"},
+		},
+		&ccli.StringFlag{
 			Name:    "edge_namespace",
-			Usage:   "Set the namespace used by the edge proxy e.g. hw.hbt.edge",
+			Usage:   "Set the namespace used by the edge proxy e.g. com.iot.edge",
 			EnvVars: []string{"EDGE_WEB_NAMESPACE"},
 		},
 		&ccli.StringFlag{
 			Name:    "edge_url",
-			Usage:   "Set the host used for the edge dashboard e.g edge.example.com",
+			Usage:   "Set the host used for the edge dashboard e.g edge.project.com",
 			EnvVars: []string{"EDGE_WEB_HOST"},
 		},
 
@@ -64,6 +69,12 @@ func setup(app *ccli.App) {
 			Usage:   "Set the edge root service namespace",
 			EnvVars: []string{"EDGE_ROOT_NAMESPACE"},
 			Value:   "edge.root",
+		},
+		&ccli.StringFlag{
+			Name:    "edge_transport",
+			Usage:   "Set the edge transport to use ,only tcp or udp for now",
+			EnvVars: []string{"EDGE_TRANSPORT"},
+			Value:   "udp",
 		},
 	)
 
@@ -74,23 +85,24 @@ func setup(app *ccli.App) {
 			app.Flags = append(app.Flags, flags...)
 		}
 
-		if cmds := p.Commands(); len(cmds) > 0 {
-			app.Commands = append(app.Commands, cmds...)
-		}
+		// no command will be used in edge
+		// if cmds := p.Commands(); len(cmds) > 0 {
+		// 	app.Commands = append(app.Commands, cmds...)
+		// }
 	}
 
 	before := app.Before
 
 	app.Before = func(ctx *ccli.Context) error {
 
-		if len(ctx.String("edge_address")) > 0 {
-			//	edge.Address = ctx.String("edge_address")
+		if len(ctx.String("edge_web_address")) > 0 {
+			Address = ctx.String("edge_address")
 		}
 		if len(ctx.String("edge_namespace")) > 0 {
-			//	edge.Namespace = ctx.String("edge_namespace")
+			Namespace = ctx.String("edge_namespace")
 		}
 		if len(ctx.String("edge_host")) > 0 {
-			//	edge.Host = ctx.String("edge_host")
+			Host = ctx.String("edge_host")
 		}
 
 		for _, p := range plugins {

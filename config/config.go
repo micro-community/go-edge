@@ -23,9 +23,6 @@ const (
 	EventSubscriberName = "x-micro-edge.subevent"
 )
 
-//XMicroEdgeServiceTransport is the current srv MicroService Name
-var XMicroEdgeServiceTransport = "tcp"
-
 //XMicroEdgeServiceAddr ip Addr
 var XMicroEdgeServiceAddr = "192.168.1.198:6600"
 
