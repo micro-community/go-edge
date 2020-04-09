@@ -8,6 +8,7 @@ import (
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 )
 
+//Protocol ...
 type Protocol struct{}
 
 // Call is a single request handler called via client.Call or the generated client code

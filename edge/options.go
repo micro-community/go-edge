@@ -103,6 +103,13 @@ func Address(a string) Option {
 	}
 }
 
+// Host to bind to - host:port
+func Host(a string) Option {
+	return func(o *Options) {
+		o.Host = a
+	}
+}
+
 // Advertise The address to advertise for discovery - host:port
 func Advertise(a string) Option {
 	return func(o *Options) {

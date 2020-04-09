@@ -67,9 +67,9 @@ func (e *edgeApp) buildGoMicroOption() []micro.Option {
 			e.opts.Advertise = adv
 		}
 
-		if e.opts.Action != nil {
-			e.opts.Action(ctx)
-		}
+		// if e.opts.Action != nil {
+		// 	e.opts.Action(ctx)
+		// }
 
 		return nil
 	}))
@@ -87,11 +87,33 @@ func (e *edgeApp) Init(opts ...Option) error {
 
 	edgeOptions := []nedge.Option{}
 
-	edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
+	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
+		if len(ctx.String("edge_web_address")) > 0 {
+			edgeOptions = append(edgeOptions, nedge.Address(ctx.String("edge_address")))
+		}
+		if len(ctx.String("edge_host")) > 0 {
+			edgeOptions = append(edgeOptions, nedge.Address(ctx.String("edge_host")))
+		}
+
+		if name := ctx.String("edge_transport"); len(name) > 0 && e.opts.EdgeTransport.String() != name {
+
+			if t, ok := e.opts.Edge.Options().Transports[name]; ok {
+				e.opts.EdgeTransport = t()
+				edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
+			}
+		}
+
+		if e.opts.Action != nil {
+			e.opts.Action(ctx)
+		}
+
+		return nil
+	}))
+
+	e.opts.Service.Init(serviceOpts...)
 
 	e.opts.Edge.Init(edgeOptions...)
 
-	e.opts.Service.Init(serviceOpts...)
 	return nil
 }
 
@@ -105,9 +127,6 @@ func (e *edgeApp) Run() error {
 	// for _, p := range Plugins() {
 	// 	p.Init(ctx)
 	// }
-
-	// pass namespace and resolver through to the server as these are needed to perform auth
-	//edgesrv := nedge.NewServer(nedge.Address(Address))
 
 	if err := e.opts.Edge.Run(); err != nil {
 		log.Fatal(err)

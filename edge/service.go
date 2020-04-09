@@ -67,11 +67,12 @@ func (s *service) Init(opts ...Option) error {
 		if len(ctx.String("edge_host")) > 0 {
 			s.opts.Host = ctx.String("edge_host")
 		}
-		if name := ctx.String("transport"); len(name) > 0 && s.opts.Transport.String() != name {
+
+		if name := ctx.String("edge_transport"); len(name) > 0 && s.opts.Transport.String() != name {
 
 			if t, ok := s.opts.Transports[name]; ok {
 				s.opts.Transport = t()
-				// @todo need to update edge client and server...
+				// TODO: better accessors need to update edge client and server...
 				s.opts.Client.Init(client.Transport(s.opts.Transport))
 				s.opts.Server.Init(server.Transport(s.opts.Transport))
 			}
