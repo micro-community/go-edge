@@ -84,11 +84,6 @@ func setup(app *ccli.App) {
 		if flags := p.Flags(); len(flags) > 0 {
 			app.Flags = append(app.Flags, flags...)
 		}
-
-		// no command will be used in edge
-		// if cmds := p.Commands(); len(cmds) > 0 {
-		// 	app.Commands = append(app.Commands, cmds...)
-		// }
 	}
 
 	before := app.Before

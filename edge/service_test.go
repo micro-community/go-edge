@@ -32,7 +32,7 @@ func TestRessignVars(t *testing.T) {
 	var a = map[string]interface{}{}
 
 	var c = map[string]MyStruct{
-		"c": MyStruct{
+		"c": {
 			Name: "im c",
 		},
 	}

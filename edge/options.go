@@ -3,7 +3,6 @@ package edge
 import (
 	"context"
 	"crypto/tls"
-	"net/http"
 	"time"
 
 	nts "github.com/micro-community/x-edge/node/transport"
@@ -36,7 +35,7 @@ type Options struct {
 	RegisterTTL      time.Duration
 	RegisterInterval time.Duration
 
-	Handler http.Handler
+	//	Handler http.Handler
 
 	// Alternative Options
 	Context context.Context
@@ -50,7 +49,8 @@ type Options struct {
 	AfterStart  []func() error
 	AfterStop   []func() error
 
-	Signal bool
+	Signal    bool
+	Namespace string
 }
 
 func newOptions(opts ...Option) Options {
@@ -61,15 +61,13 @@ func newOptions(opts ...Option) Options {
 		Address:   DefaultAddress,
 		Server:    DefaultServer,
 		Transport: DefaultTransport,
-		Service:   micro.NewService(),
 		Context:   context.TODO(),
-		Signal:  true,
+		Signal:    true,
 	}
 
 	for _, o := range opts {
 		o(&opt)
 	}
-
 	return opt
 }
 
@@ -148,24 +146,17 @@ func RegisterInterval(t time.Duration) Option {
 	}
 }
 
-// Handler binding
-func Handler(h http.Handler) Option {
-	return func(o *Options) {
-		o.Handler = h
-	}
-}
+// // Handler binding
+// func Handler(h http.Handler) Option {
+// 	return func(o *Options) {
+// 		o.Handler = h
+// 	}
+// }
 
 // Server to use a customer Server
 func Server(srv server.Server) Option {
 	return func(o *Options) {
 		o.Server = srv
-	}
-}
-
-// MicroService sets the micro.Service used internally
-func MicroService(s micro.Service) Option {
-	return func(o *Options) {
-		o.Service = s
 	}
 }
 
@@ -251,5 +242,12 @@ func Transport(t transport.Transport) Option {
 		// Update Client and Server
 		o.Client.Init(client.Transport(t))
 		o.Server.Init(server.Transport(t))
+	}
+}
+
+//Namespace of edge server
+func Namespace(n string) Option {
+	return func(o *Options) {
+		o.Namespace = n
 	}
 }

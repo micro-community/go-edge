@@ -47,7 +47,7 @@ var (
 	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge"})
 )
 
-// NewService returns a new web.Service
-func NewService(opts ...Option) Service {
+// NewServer returns a new edge node server
+func NewServer(opts ...Option) Service {
 	return newService(opts...)
 }

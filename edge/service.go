@@ -14,9 +14,6 @@ import (
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/util/wrapper"
-
-	_ "github.com/micro-community/x-edge/node/client"
-	
 )
 
 type service struct {
@@ -30,7 +27,7 @@ type service struct {
 func newService(opts ...Option) Service {
 
 	options := newOptions(opts...)
-	
+
 	// service name
 	serviceName := options.Server.Options().Name
 
