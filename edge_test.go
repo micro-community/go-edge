@@ -17,7 +17,7 @@ func TestInterfaceEqual(t *testing.T) {
 	if reflect.TypeOf(ms).Kind() != reflect.TypeOf(ss).Kind() {
 		t.Errorf("different type %v : %v", ms, ss)
 	}
-	//so they are equl type
+	//so they are equal type
 
 }
 func TestFunction(t *testing.T) {

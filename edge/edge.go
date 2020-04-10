@@ -30,7 +30,7 @@ type PackageExtractor func(data []byte, atEOF bool) (advance int, token []byte, 
 
 //service metadata
 var (
-	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge-srv"})
+	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge-node"})
 )
 
 // NewServer returns a new edge node server

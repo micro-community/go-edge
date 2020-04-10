@@ -32,15 +32,12 @@ type edgeApp struct {
 
 //NewService return a edge service application
 func NewService(opts ...Option) Service {
-
 	options := newOptions(opts...)
 
 	s := &edgeApp{
 		opts: options,
 	}
-
 	return s
-
 }
 
 func (e *edgeApp) buildGoMicroOption() []micro.Option {
@@ -104,16 +101,18 @@ func (e *edgeApp) Init(opts ...Option) error {
 			}
 		}
 
+		// execute edge service Action
+		if e.opts.Edge.Options().Action != nil {
+			e.opts.Edge.Options().Action(ctx)
+		}
 		if e.opts.Action != nil {
 			e.opts.Action(ctx)
 		}
 
 		return nil
 	}))
-
-	e.opts.MicroService.Init(serviceOpts...)
-
 	e.opts.Edge.Init(edgeOptions...)
+	e.opts.MicroService.Init(serviceOpts...)
 
 	return nil
 }

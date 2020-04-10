@@ -5,12 +5,12 @@ color 0D
 @rem cls
 
 setlocal
-echo Copyright 2019 micro-community authors.
+echo Copyright 2020 micro-community authors.
 echo Generate the Go code for .proto files
 echo @rem choco install -y protoc
-echo @rem  go get -v -u github.com/micro/protoc-gen-micro
-echo @rem  go get -v -u github.com/golang/protobuf/proto
-echo @rem  go get -v -u github.com/golang/protobuf/protoc-gen-go
+echo @rem  go get -v github.com/micro/protoc-gen-micro
+echo @rem  go get -v github.com/golang/protobuf/proto
+echo @rem  go get -v github.com/golang/protobuf/protoc-gen-go
 echo @rem  visit https://github.com/micro/protoc-gen-micro for this tools
 echo.
 @rem enter this directory of bat

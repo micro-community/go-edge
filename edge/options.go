@@ -27,7 +27,7 @@ type Options struct {
 	Server server.Server
 
 	Transport transport.Transport
-
+	//Action for edge service
 	Action func(*cli.Context)
 	Flags  []cli.Flag
 

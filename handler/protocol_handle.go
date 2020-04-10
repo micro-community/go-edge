@@ -3,9 +3,8 @@ package handler
 import (
 	"context"
 
-	log "github.com/micro/go-micro/v2/logger"
-
 	protocol "github.com/micro-community/x-edge/proto/protocol"
+	log "github.com/micro/go-micro/v2/logger"
 )
 
 //Protocol ...
