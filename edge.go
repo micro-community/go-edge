@@ -4,7 +4,6 @@ import (
 	nedge "github.com/micro-community/x-edge/edge"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/auth"
 	log "github.com/micro/go-micro/v2/logger"
 )
 
@@ -29,8 +28,6 @@ type Service interface {
 //edgeApp for edge process
 type edgeApp struct {
 	opts Options
-	// auth service
-	auth auth.Auth
 }
 
 //NewService return a edge service application
