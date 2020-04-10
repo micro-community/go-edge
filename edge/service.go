@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/debug/trace"
@@ -57,9 +56,9 @@ func (s *service) Init(opts ...Option) error {
 		o(&s.opts)
 	}
 
-	serviceOpts := []micro.Option{}
+	//	serviceOpts := []Option{}
 
-	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
+	s.opts.Action = func(ctx *cli.Context) {
 		if len(ctx.String("edge_web_address")) > 0 {
 			s.opts.Address = ctx.String("edge_address")
 		}
@@ -78,12 +77,7 @@ func (s *service) Init(opts ...Option) error {
 			}
 		}
 
-		if s.opts.Action != nil {
-			s.opts.Action(ctx)
-		}
-
-		return nil
-	}))
+	}
 
 	return nil
 }

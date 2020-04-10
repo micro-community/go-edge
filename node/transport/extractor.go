@@ -10,4 +10,4 @@ type DataExtractor = bufio.SplitFunc
 //DataExtractorFuncKey for DataExtractor
 type DataExtractorFuncKey struct{}
 
-var minDataPakckageLenth = 50
+var minDataPackageLength = 50

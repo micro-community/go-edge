@@ -2,6 +2,8 @@ package edge
 
 // Service is a edge service to connect to device/gw/controller/box
 import (
+	"bufio"
+
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
@@ -26,7 +28,7 @@ type Service interface {
 type Option func(o *Options)
 
 //PackageExtractor for extract package from protocol
-type PackageExtractor func(data []byte, atEOF bool) (advance int, token []byte, err error)
+type PackageExtractor = bufio.SplitFunc
 
 //service metadata
 var (

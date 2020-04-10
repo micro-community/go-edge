@@ -85,22 +85,19 @@ func (e *edgeApp) Init(opts ...Option) error {
 
 	edgeOptions := []nedge.Option{}
 
+	if e.opts.EdgeTransport != nil {
+		edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
+	}
+	if e.opts.EdgeHost != "" {
+		edgeOptions = append(edgeOptions, nedge.Host(e.opts.EdgeHost))
+	}
+	if e.opts.Extractor != nil {
+		edgeOptions = append(edgeOptions, nedge.WithExtractor(e.opts.Extractor))
+	}
+
+	e.opts.Edge.Init(edgeOptions...)
+
 	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
-		if len(ctx.String("edge_web_address")) > 0 {
-			edgeOptions = append(edgeOptions, nedge.Address(ctx.String("edge_address")))
-		}
-		if len(ctx.String("edge_host")) > 0 {
-			edgeOptions = append(edgeOptions, nedge.Address(ctx.String("edge_host")))
-		}
-
-		if name := ctx.String("edge_transport"); len(name) > 0 && e.opts.EdgeTransport.String() != name {
-
-			if t, ok := e.opts.Edge.Options().Transports[name]; ok {
-				e.opts.EdgeTransport = t()
-				edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
-			}
-		}
-
 		// execute edge service Action
 		if e.opts.Edge.Options().Action != nil {
 			e.opts.Edge.Options().Action(ctx)
@@ -111,7 +108,7 @@ func (e *edgeApp) Init(opts ...Option) error {
 
 		return nil
 	}))
-	e.opts.Edge.Init(edgeOptions...)
+
 	e.opts.MicroService.Init(serviceOpts...)
 
 	return nil

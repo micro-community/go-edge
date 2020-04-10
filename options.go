@@ -36,7 +36,7 @@ type Options struct {
 	//for edge server
 	EdgeTransport transport.Transport
 	EdgeHost      string
-
+	Extractor     nedge.PackageExtractor
 	// auth service
 	//auth auth.Auth
 
@@ -98,5 +98,12 @@ func Version(v string) Option {
 func EgTransport(et transport.Transport) Option {
 	return func(o *Options) {
 		o.EdgeTransport = et
+	}
+}
+
+// EgExtractor of the edge
+func EgExtractor(ext nedge.PackageExtractor) Option {
+	return func(o *Options) {
+		o.Extractor = ext
 	}
 }
