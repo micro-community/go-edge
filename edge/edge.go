@@ -2,11 +2,6 @@ package edge
 
 // Service is a edge service to connect to device/gw/controller/box
 import (
-	"errors"
-	//here should edge internal logic
-	"github.com/google/uuid"
-	nserver "github.com/micro-community/x-edge/node/server"
-	"github.com/micro-community/x-edge/node/transport/tcp"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
@@ -30,21 +25,12 @@ type Service interface {
 //Option for edge
 type Option func(o *Options)
 
+//PackageExtractor for extract package from protocol
+type PackageExtractor func(data []byte, atEOF bool) (advance int, token []byte, err error)
+
 //service metadata
 var (
-	DefaultName           = "x-edge-node"
-	DefaultVersion        = "latest"
-	DefaultAddress        = ":8000"
-	DefaultID             = uuid.New().String()
-	DefaultServer         = nserver.NewServer()
-	DefaultTransport      = tcp.NewTransport()
-	ErrNoExtractorDefined = errors.New("No Extractor Defined")
-
-	DefaultExtractor = func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-		return -1, nil, ErrNoExtractorDefined
-	}
-
-	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge"})
+	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "edge-srv"})
 )
 
 // NewServer returns a new edge node server

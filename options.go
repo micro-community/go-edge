@@ -37,6 +37,9 @@ type Options struct {
 	EdgeTransport transport.Transport
 	EdgeHost      string
 
+	// auth service
+	//auth auth.Auth
+
 	// Alternative Options
 	Context context.Context
 }

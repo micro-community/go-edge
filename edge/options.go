@@ -32,6 +32,7 @@ type Options struct {
 	Flags  []cli.Flag
 
 	//	Handler http.Handler
+	Extractor PackageExtractor
 
 	Transports map[string]func(...transport.Option) transport.Transport
 
@@ -44,8 +45,7 @@ type Options struct {
 	BeforeStop  []func() error
 	AfterStart  []func() error
 	AfterStop   []func() error
-
-	Signal bool
+	Signal      bool
 }
 
 func newOptions(opts ...Option) Options {
@@ -54,6 +54,7 @@ func newOptions(opts ...Option) Options {
 		ID:        DefaultID,
 		Address:   DefaultAddress,
 		Server:    DefaultServer,
+		Extractor: DefaultExtractor,
 		Transport: DefaultTransport,
 		Context:   context.TODO(),
 		Signal:    true,
