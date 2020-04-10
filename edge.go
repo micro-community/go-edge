@@ -1,6 +1,8 @@
 package edge
 
 import (
+	"strings"
+
 	nedge "github.com/micro-community/x-edge/edge"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
@@ -88,7 +90,7 @@ func (e *edgeApp) Init(opts ...Option) error {
 	if e.opts.EdgeTransport != nil {
 		edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
 	}
-	if e.opts.EdgeHost != "" {
+	if strings.Trim(e.opts.EdgeHost, " ") != "" {
 		edgeOptions = append(edgeOptions, nedge.Host(e.opts.EdgeHost))
 	}
 	if e.opts.Extractor != nil {
@@ -114,16 +116,20 @@ func (e *edgeApp) Init(opts ...Option) error {
 	return nil
 }
 
+func (e *edgeApp) start() error {
+
+	return nil
+}
+
+func (e *edgeApp) stop() error {
+	return nil
+}
+
 //Run to launch edge server process
 func (e *edgeApp) Run() error {
 
 	// init edge itself
 	log.Init(log.WithFields(map[string]interface{}{"service": "edge"}))
-
-	// Init plugins
-	// for _, p := range Plugins() {
-	// 	p.Init(ctx)
-	// }
 
 	if err := e.opts.Edge.Run(); err != nil {
 		log.Fatal(err)

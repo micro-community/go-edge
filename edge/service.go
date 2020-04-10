@@ -126,7 +126,7 @@ func (s *service) Start() error {
 	return nil
 }
 
-//Run edge service
+//Run edge srv node
 func (s *service) Run() error {
 
 	if err := s.Start(); err != nil {
