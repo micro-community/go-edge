@@ -33,7 +33,7 @@ func main() {
 
 	srv.Init()
 
-	// Run servicent
+	// Run service
 	if err := srv.Run(); err != nil {
 		log.Fatal(err)
 	}

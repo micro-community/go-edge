@@ -10,7 +10,6 @@ import (
 
 //basic metadata
 var (
-
 	//	Transport     = "udp"
 	Host = ":8080"
 	//  AppNamespace = "x.edge"
@@ -23,6 +22,8 @@ type Service interface {
 	Init(opts ...Option) error
 	Run() error
 	String() string
+	MicroService() micro.Service
+	EdgeService() nedge.Service
 }
 
 //edgeApp for edge process
@@ -35,7 +36,14 @@ type edgeApp struct {
 //NewService return a edge service application
 func NewService(opts ...Option) Service {
 
-	return nil
+	options := newOptions(opts...)
+
+	s := &edgeApp{
+		opts: options,
+	}
+
+	return s
+
 }
 
 func (e *edgeApp) buildGoMicroOption() []micro.Option {
@@ -66,10 +74,6 @@ func (e *edgeApp) buildGoMicroOption() []micro.Option {
 		if adv := ctx.String("server_advertise"); len(adv) > 0 {
 			e.opts.Advertise = adv
 		}
-
-		// if e.opts.Action != nil {
-		// 	e.opts.Action(ctx)
-		// }
 
 		return nil
 	}))
@@ -147,4 +151,17 @@ func (e *edgeApp) Run() error {
 // return micro.service
 func (e *edgeApp) MicroService() micro.Service {
 	return e.opts.Service
+}
+
+// return micro.service
+func (e *edgeApp) EdgeService() nedge.Service {
+	return e.opts.Edge
+}
+
+func (e *edgeApp) Name() string {
+	return e.opts.Name
+}
+
+func (e *edgeApp) String() string {
+	return "edgeApp"
 }

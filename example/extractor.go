@@ -4,9 +4,9 @@ import (
 	"regexp"
 )
 
-var minDataPakckageLenth = 50
+var minDataPackageLength = 50
 
-//extract data pakcage
+//extract data package
 func dataExtractor(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 	if atEOF || len(data) == 0 {
@@ -17,7 +17,7 @@ func dataExtractor(data []byte, atEOF bool) (advance int, token []byte, err erro
 
 	indexs := reg.FindIndex(data)
 
-	if indexs == nil || indexs[0] <= minDataPakckageLenth {
+	if indexs == nil || indexs[0] <= minDataPackageLength {
 		return -1, data, nil //errors.New("error to extract data from socket")
 		//return
 	}
