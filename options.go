@@ -94,6 +94,13 @@ func Version(v string) Option {
 	}
 }
 
+// Action of the service
+func Action(a func(*cli.Context)) Option {
+	return func(o *Options) {
+		o.Action = a
+	}
+}
+
 // EgTransport of the edge
 func EgTransport(et transport.Transport) Option {
 	return func(o *Options) {
