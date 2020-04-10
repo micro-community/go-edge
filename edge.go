@@ -22,8 +22,8 @@ type Service interface {
 	Init(opts ...Option) error
 	Run() error
 	String() string
-	MicroService() micro.Service
-	EdgeService() nedge.Service
+	MService() micro.Service
+	EService() nedge.Service
 }
 
 //edgeApp for edge process
@@ -114,7 +114,7 @@ func (e *edgeApp) Init(opts ...Option) error {
 		return nil
 	}))
 
-	e.opts.Service.Init(serviceOpts...)
+	e.opts.MicroService.Init(serviceOpts...)
 
 	e.opts.Edge.Init(edgeOptions...)
 
@@ -137,7 +137,7 @@ func (e *edgeApp) Run() error {
 	}
 
 	// Run go-micro servier
-	if err := e.opts.Service.Run(); err != nil {
+	if err := e.opts.MicroService.Run(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -149,12 +149,12 @@ func (e *edgeApp) Run() error {
 }
 
 // return micro.service
-func (e *edgeApp) MicroService() micro.Service {
-	return e.opts.Service
+func (e *edgeApp) MService() micro.Service {
+	return e.opts.MicroService
 }
 
 // return micro.service
-func (e *edgeApp) EdgeService() nedge.Service {
+func (e *edgeApp) EService() nedge.Service {
 	return e.opts.Edge
 }
 

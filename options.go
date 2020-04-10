@@ -28,9 +28,10 @@ type Options struct {
 	// RegisterCheck runs a check function before registering the service
 	RegisterCheck func(context.Context) error
 	Registry      registry.Registry
-	Service       micro.Service
 
-	Edge nedge.Service
+	//two service end
+	MicroService micro.Service
+	Edge         nedge.Service
 
 	//for edge server
 	EdgeTransport transport.Transport
@@ -45,16 +46,16 @@ type Option func(*Options)
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
-		Service: micro.NewService(),
-		Context: context.TODO(),
+		MicroService: micro.NewService(),
+		Context:      context.TODO(),
 	}
 
 	for _, o := range opts {
 		o(&opt)
 	}
 
-	if opt.Service == nil {
-		opt.Service = micro.NewService()
+	if opt.MicroService == nil {
+		opt.MicroService = micro.NewService()
 	}
 	if opt.Edge == nil {
 		opt.Edge = nedge.NewServer()
@@ -65,7 +66,7 @@ func newOptions(opts ...Option) Options {
 // MicroService sets the micro.Service for internal communication
 func MicroService(s micro.Service) Option {
 	return func(o *Options) {
-		o.Service = s
+		o.MicroService = s
 	}
 }
 
