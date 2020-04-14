@@ -5,8 +5,6 @@ import (
 	"encoding/xml"
 	"regexp"
 
-	_ "github.com/micro/go-micro/v2/broker"
-
 	"github.com/micro/go-micro/v2/codec"
 	log "github.com/micro/go-micro/v2/logger"
 
@@ -15,8 +13,8 @@ import (
 	protocol "github.com/micro-community/x-edge/proto/protocol"
 )
 
-//ProtocolPackge means a private protocol pakcage
-type ProtocolPackge struct {
+//ProtocolPackage means a private protocol package
+type ProtocolPackage struct {
 	Version string `xml:"VER"`
 	Name    string `xml:"NAME"`
 	Gender  string `xml:"GENDER"`
@@ -30,7 +28,7 @@ type ProtocolPackge struct {
 type ProtocolServer struct {
 }
 
-func (e *ProtocolServer) unpackage(buf []byte) (protocolInfo ProtocolPackge, err error) {
+func (e *ProtocolServer) unpackage(buf []byte) (protocolInfo ProtocolPackage, err error) {
 
 	reg, _ := regexp.Compile("(?i:^<\\?xml (.+?)\\?>)")
 
@@ -40,7 +38,7 @@ func (e *ProtocolServer) unpackage(buf []byte) (protocolInfo ProtocolPackge, err
 		srcBuffer = srcBuffer[indexs[1]+1:]
 	}
 
-	protocolInfo = ProtocolPackge{}
+	protocolInfo = ProtocolPackage{}
 	err = xml.Unmarshal(srcBuffer, &protocolInfo)
 	if err != nil {
 		log.Errorf("unpackage error:%v", err)
@@ -49,7 +47,7 @@ func (e *ProtocolServer) unpackage(buf []byte) (protocolInfo ProtocolPackge, err
 	return protocolInfo, nil
 }
 
-func (e *ProtocolServer) createProtocMsg(protocolInfo ProtocolPackge) (msg protocol.Message) {
+func (e *ProtocolServer) createProtocMsg(protocolInfo ProtocolPackage) (msg protocol.Message) {
 	msg = protocol.Message{
 		Ver:     protocolInfo.Version,
 		Name:    protocolInfo.Name,
@@ -68,8 +66,8 @@ func (e *ProtocolServer) Event(ctx context.Context, req *codec.Message, resp *co
 	logstr := string(req.Body[:])
 	log.Info("[Received Protocol Event request]:", logstr)
 
-	//unpackage from xml to ProtocolPackge
-	ProtocolPackge, err := e.unpackage(req.Body)
+	//unpackage from xml to ProtocolPackage
+	ProtocolPackage, err := e.unpackage(req.Body)
 	if err != nil {
 		return nil
 	}
@@ -77,7 +75,7 @@ func (e *ProtocolServer) Event(ctx context.Context, req *codec.Message, resp *co
 	//rpc proto.NewProtocolService()
 
 	//make the protocol.message
-	buf := e.createProtocMsg(ProtocolPackge)
+	buf := e.createProtocMsg(ProtocolPackage)
 	//publish protocol.message
 	err = eventbroker.PublishEventMessage(&buf)
 

@@ -53,6 +53,7 @@ func newOptions(opts ...Option) Options {
 		Name:      DefaultName,
 		ID:        DefaultID,
 		Address:   DefaultAddress,
+		Client:    DefaultClient,
 		Server:    DefaultServer,
 		Extractor: DefaultExtractor,
 		Transport: DefaultTransport,

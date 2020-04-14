@@ -13,7 +13,7 @@
             "env": {},
             "args": [
                 "--server_name=micro.cn.edge.node",
-                "--edge_address=192.168.1.198:7700",
+                "--edge_host=192.168.1.198:7700",
                 "--edge_transport=udp",
             ]
         }

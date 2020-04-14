@@ -4,6 +4,8 @@ import (
 	"errors"
 	//here should edge internal logic
 	"github.com/google/uuid"
+
+	nclient "github.com/micro-community/x-edge/node/client"
 	nserver "github.com/micro-community/x-edge/node/server"
 	"github.com/micro-community/x-edge/node/transport/tcp"
 	"github.com/micro-community/x-edge/node/transport/udp"
@@ -16,6 +18,7 @@ var (
 	DefaultVersion        = "latest"
 	DefaultAddress        = ":8000"
 	DefaultID             = uuid.New().String()
+	DefaultClient         = nclient.NewClient()
 	DefaultServer         = nserver.NewServer()
 	DefaultTransport      = tcp.NewTransport()
 	ErrNoExtractorDefined = errors.New("No Extractor Defined")

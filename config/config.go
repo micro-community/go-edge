@@ -7,7 +7,7 @@ import (
 	"github.com/micro/go-micro/v2/config/source/file"
 )
 
-//Sevice configuration and register
+//Service configuration and register
 const (
 	//RegisterTTL Time
 	RegisterTTL = 30
@@ -45,7 +45,7 @@ type MicroSets struct {
 	MicroRegisterInterval int    `toml:"microregisterinterval"`
 }
 
-//Config From filea
+//Config From files
 var (
 	DBConfig    Database
 	CacheConfig Cache

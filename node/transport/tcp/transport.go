@@ -4,12 +4,13 @@ package tcp
 import (
 	"bufio"
 	"crypto/tls"
+	"net"
+
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/v2/transport"
 	maddr "github.com/micro/go-micro/v2/util/addr"
 	mnet "github.com/micro/go-micro/v2/util/net"
 	mls "github.com/micro/go-micro/v2/util/tls"
-	"net"
 )
 
 type tcpTransport struct {
