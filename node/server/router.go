@@ -152,7 +152,8 @@ func (router *Routing) readRequest(rqst server.Request) (service *service, mtype
 	return
 }
 
-func (r *Routing) ProcessMessage(ctx context.Context, msg server.Message) error {
+//ProcessMessage for Routing
+func (router *Routing) ProcessMessage(ctx context.Context, msg server.Message) error {
 	return nil
 }
 

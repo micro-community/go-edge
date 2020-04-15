@@ -12,10 +12,13 @@
     // words - list of words to be always considered correct
     "words": [
         "dopts",
+        "mtype",
         "musl",
         "nclient",
         "rabbitmq",
+        "rcvr",
         "registerttl",
+        "replyv",
         "rqst",
         "xmlc"
     ],

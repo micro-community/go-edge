@@ -22,10 +22,9 @@ type Options struct {
 	Address   string
 	Advertise string
 
-	Auth   auth.Auth
-	Client client.Client
-	Server server.Server
-
+	Auth      auth.Auth
+	Client    client.Client
+	Server    server.Server
 	Transport transport.Transport
 	//Action for edge service
 	Action func(*cli.Context)
@@ -35,7 +34,6 @@ type Options struct {
 	Extractor PackageExtractor
 
 	Transports map[string]func(...transport.Option) transport.Transport
-
 	// Alternative Options
 	Context context.Context
 
