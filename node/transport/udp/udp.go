@@ -3,8 +3,8 @@ package udp
 
 import (
 	"bufio"
-	"encoding/gob"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/micro/go-micro/v2/config/cmd"
@@ -18,31 +18,38 @@ type udpTransport struct {
 type udpClient struct {
 	dialOpts transport.DialOptions
 	conn     net.Conn
-	enc      *gob.Encoder
-	dec      *gob.Decoder
 	encBuf   *bufio.Writer
 	timeout  time.Duration
 }
 
 type udpSocket struct {
+	sync.RWMutex
+	recv chan *transport.Message
+	send chan *transport.Message
 	conn *net.UDPConn
-	// enc        *gob.Encoder
-	// dec        *gob.Decoder
-	encBuf     *bufio.Writer
-	timeout    time.Duration
-	packageBuf []byte
-	packageLen int
-	dstAddr    *net.UDPAddr
-	closed     bool
+	//	encBuf  *bufio.Writer
+	timeout time.Duration
+	//	packageBuf []byte
+	//	packageLen int
+	dstAddr *net.UDPAddr
+	local   string
+	remote  string
+	exit    chan bool
 }
 
 //UDPServerRecvMaxLen Default UDP buffer len
 const UDPServerRecvMaxLen = 2048
 
 type udpListener struct {
+	sync.RWMutex
 	timeout  time.Duration
 	listener *net.UDPConn
-	opts     transport.ListenOptions
+	conn     chan *udpSocket
+	// sock exit
+	exit chan bool
+	// listener exit
+	listenerexit chan bool
+	opts         transport.ListenOptions
 }
 
 func init() {
@@ -57,4 +64,3 @@ func NewTransport(opts ...transport.Option) transport.Transport {
 	}
 	return &udpTransport{opts: options}
 }
-

@@ -60,6 +60,8 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 
 	return &udpListener{
 		timeout:  u.opts.Timeout,
+		conn:     make(chan *memorySocket),
+		exit:     make(chan bool),
 		listener: l,
 		opts:     options,
 	}, nil
