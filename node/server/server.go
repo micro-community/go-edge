@@ -265,7 +265,7 @@ func (s *nodeServer) Start() error {
 	}
 	s.RUnlock()
 
-	config := s.opts
+	config := s.Options()
 
 	// start listening on the transport
 	ts, err := config.Transport.Listen(config.Address)

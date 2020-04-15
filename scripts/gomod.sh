@@ -13,7 +13,7 @@ go get github.com/micro/go-micro/v2@master
 go fmt
 go mod tidy
 git add go.mod go.sum
-git commit -m "Update go.mod for github.com/micro/go-micro/v2"
+git commit -m "Update go.mod for go-micro/v2"
 git push origin go-mod
 git checkout master
 git branch -D go-mod

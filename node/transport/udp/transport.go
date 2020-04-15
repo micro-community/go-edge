@@ -45,15 +45,14 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	for _, o := range opts {
 		o(&options)
 	}
-	//	var l net.Listener
 	var err error
 
-	udpAdress, err := net.ResolveUDPAddr("udp", addr)
+	udpAddress, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		return nil, err
 	}
 
-	l, err := net.ListenUDP("udp", udpAdress)
+	l, err := net.ListenUDP("udp", udpAddress)
 
 	if err != nil {
 		return nil, err
