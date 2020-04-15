@@ -56,10 +56,9 @@ func (s *service) Init(opts ...Option) error {
 		o(&s.opts)
 	}
 
-	// If flags are set then use them otherwise do nothing
 	//var authOpts []auth.Option
 	var serverOpts []server.Option
-	//var clientOpts []client.Option
+	var clientOpts []client.Option
 
 	s.opts.Action = func(ctx *cli.Context) {
 
@@ -69,7 +68,7 @@ func (s *service) Init(opts ...Option) error {
 		}
 		if len(ctx.String("edge_host")) > 0 {
 			s.opts.Host = ctx.String("edge_host")
-			serverOpts = append(serverOpts, server.Address(ctx.String("edge_host")))
+			serverOpts = append(serverOpts, server.Address(s.opts.Host))
 
 		}
 		if len(ctx.String("edge_address")) > 0 {
@@ -78,9 +77,8 @@ func (s *service) Init(opts ...Option) error {
 		if name := ctx.String("edge_transport"); len(name) > 0 && s.opts.Transport.String() != name {
 			if t, ok := s.opts.Transports[name]; ok {
 				s.opts.Transport = t()
-				// TODO: better accessors need to update edge client and server...
-				s.opts.Client.Init(client.Transport(s.opts.Transport))
-				s.opts.Server.Init(server.Transport(s.opts.Transport))
+				serverOpts = append(serverOpts, server.Transport(s.opts.Transport))
+				clientOpts = append(clientOpts, client.Transport(s.opts.Transport))
 			}
 		}
 
@@ -88,6 +86,12 @@ func (s *service) Init(opts ...Option) error {
 		if len(serverOpts) > 0 {
 			if err := s.Server().Init(serverOpts...); err != nil {
 				logger.Fatalf("Error configuring server: %v", err)
+			}
+		}
+		//set Opts for client
+		if len(clientOpts) > 0 {
+			if err := s.Client().Init(clientOpts...); err != nil {
+				logger.Fatalf("Error configuring client: %v", err)
 			}
 		}
 

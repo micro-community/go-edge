@@ -3,7 +3,7 @@ package eventbroker
 import (
 	"context"
 
-	"github.com/micro-community/x-edge/config"
+	config "github.com/micro-community/x-edge/app"
 	"github.com/micro-community/x-edge/proto/protocol"
 	"github.com/micro-community/x-edge/subscriber"
 	"github.com/micro/go-micro/v2"

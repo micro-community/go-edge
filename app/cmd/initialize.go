@@ -1,4 +1,4 @@
-package edge
+package cmd
 
 import (
 	"github.com/micro-community/x-edge/config"
