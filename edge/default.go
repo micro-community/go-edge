@@ -9,6 +9,7 @@ import (
 	nserver "github.com/micro-community/x-edge/node/server"
 	"github.com/micro-community/x-edge/node/transport/tcp"
 	"github.com/micro-community/x-edge/node/transport/udp"
+	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/transport"
 )
 
@@ -30,4 +31,6 @@ var (
 		"udp": udp.NewTransport,
 		"tcp": tcp.NewTransport,
 	}
+
+	log = logger.NewHelper(logger.DefaultLogger).WithFields(map[string]interface{}{"service": "[Edge-node]"})
 )

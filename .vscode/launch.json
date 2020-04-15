@@ -12,7 +12,8 @@
             "program": "${workspaceFolder}/example/main.go",
             "env": {},
             "args": [
-                "--server_name=micro.cn.edge.node",
+                "--server_name=x.edge.node",
+                "--server_address=0.0.0.0:8080",
                 "--edge_host=192.168.1.198:7700",
                 "--edge_transport=udp",
             ]

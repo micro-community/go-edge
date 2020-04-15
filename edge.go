@@ -123,9 +123,9 @@ func (e *edgeApp) stop() error {
 func (e *edgeApp) Run() error {
 
 	// init edge itself
-	log.Init(log.WithFields(map[string]interface{}{"service": "edge"}))
+	log.Init(log.WithFields(map[string]interface{}{"Service": "[Edge]"}))
 
-	if err := e.opts.Edge.Run(); err != nil {
+	if err := e.opts.Edge.Start(); err != nil {
 		log.Fatal(err)
 	}
 

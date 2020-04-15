@@ -50,7 +50,7 @@ func setup(app *ccli.App) {
 		},
 		&ccli.StringFlag{
 			Name:    "edge_host",
-			Usage:   "Set the edge host e.g localhost:800",
+			Usage:   "Set the edge host e.g localhost:8000",
 			EnvVars: []string{"EDGE_HOST"},
 		},
 		&ccli.StringFlag{
@@ -95,7 +95,6 @@ func setup(app *ccli.App) {
 				return err
 			}
 		}
-
 		// now do previous before
 		return before(ctx)
 	}

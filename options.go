@@ -7,6 +7,7 @@ import (
 	nedge "github.com/micro-community/x-edge/edge"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/transport"
 )
@@ -38,8 +39,7 @@ type Options struct {
 	EdgeHost      string
 	Extractor     nedge.PackageExtractor
 	// auth service
-	//auth auth.Auth
-
+	auth auth.Auth
 	// Alternative Options
 	Context context.Context
 }
