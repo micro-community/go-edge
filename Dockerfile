@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine as builder
+FROM golang:1.14-alpine as builder
 RUN apk --no-cache add make git gcc libtool musl-dev
 WORKDIR /
 COPY . /

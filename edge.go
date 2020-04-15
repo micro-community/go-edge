@@ -9,13 +9,7 @@ import (
 	log "github.com/micro/go-micro/v2/logger"
 )
 
-//basic metadata
-var (
-	//	Transport     = "udp"
-	Host = ":8080"
-	//  AppNamespace = "x.edge"
-	HeaderPrefix = "x-edge-"
-)
+//Edge config locate in x-edge/config
 
 //Service of edge srv
 type Service interface {
@@ -162,5 +156,5 @@ func (e *edgeApp) Name() string {
 }
 
 func (e *edgeApp) String() string {
-	return "edgeApp"
+	return "edge app"
 }

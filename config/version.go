@@ -9,7 +9,7 @@ var (
 	BuildDate string
 
 	Name        = "x-edge"
-	Description = "A go-micro edge server app"
+	Description = "a go-micro edge server app"
 	version     = "2.0.0"
 )
 

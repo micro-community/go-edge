@@ -1,6 +1,5 @@
 package edge
 
-// Service is a edge service to connect to device/gw/controller/box
 import (
 	"bufio"
 
@@ -17,8 +16,6 @@ type Service interface {
 	Server() server.Server
 	Init(opts ...Option) error
 	Options() Options
-	//Handle(pattern string, handler http.Handler)
-	//	HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))
 	Start() error
 	Run() error
 	Stop() error
