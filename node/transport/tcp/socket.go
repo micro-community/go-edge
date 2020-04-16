@@ -4,16 +4,15 @@ package tcp
 import (
 	"bufio"
 	"errors"
-	nts "github.com/micro-community/x-edge/node/transport"
-	"github.com/micro/go-micro/v2/transport"
 	"net"
 	"time"
+
+	nts "github.com/micro-community/x-edge/node/transport"
+	"github.com/micro/go-micro/v2/transport"
 )
 
 type tcpTransportSocket struct {
-	conn net.Conn
-	//	enc     *gob.Encoder
-	//	dec     *gob.Decoder
+	conn          net.Conn
 	encBuf        *bufio.Writer
 	timeout       time.Duration
 	dataExtractor nts.DataExtractor
