@@ -1,0 +1,31 @@
+{
+    "version": "0.1",
+    "enabledLanguageIds": [
+        "go",
+        "javascript",
+        "markdown",
+        "plaintext",
+        "yml",
+        "toml"
+    ],
+    "enabled": true,
+    // words - list of words to be always considered correct
+    "words": [
+        "dopts",
+        "mtype",
+        "musl",
+        "nclient",
+        "rabbitmq",
+        "rcvr",
+        "registerttl",
+        "replyv",
+        "rqst",
+        "xmlc"
+    ],
+    // flagWords - list of words to be always considered incorrect
+    // This is useful for offensive words and common spelling errors.
+    // For example "hte" should be "the"
+    "flagWords": [
+        "hte"
+    ]
+}

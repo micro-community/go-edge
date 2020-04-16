@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 
-	log "github.com/micro/go-micro/v2/logger"
-
 	protocol "github.com/micro-community/x-edge/proto/protocol"
+	log "github.com/micro/go-micro/v2/logger"
 )
 
+//Protocol ...
 type Protocol struct{}
 
 // Call is a single request handler called via client.Call or the generated client code

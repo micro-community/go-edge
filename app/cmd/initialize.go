@@ -1,7 +1,7 @@
-package edge
+package cmd
 
 import (
-	"github.com/micro-community/x-edge/config"
+	config "github.com/micro-community/x-edge/app"
 	ccli "github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/config/cmd"
@@ -10,13 +10,13 @@ import (
 )
 
 func init() {
-	// // setup the build plugin
-	plugin.Register(build.Flags())
+	initApp()
 }
 
-// Init initialised the command line
-func Init(options ...micro.Option) {
-	Setup(cmd.App(), options...)
+// initApp initialize edge app to do some basic config
+func initApp(options ...micro.Option) {
+
+	setupApp(cmd.App(), options...)
 
 	cmd.Init(
 		cmd.Name(config.Name),
@@ -25,11 +25,11 @@ func Init(options ...micro.Option) {
 	)
 }
 
-// Setup a cli.App
-func Setup(app *ccli.App, options ...micro.Option) {
+// setupEdgeApp a edge App to boost
+func setupApp(app *ccli.App, options ...micro.Option) {
 
 	// Add the various commands,
-	// only plugin for edge
+	// only plugin(middle ware enabled) for edge
 	app.Commands = append(app.Commands, build.Commands()...)
 
 	setup(app)
@@ -44,18 +44,23 @@ func setup(app *ccli.App) {
 			Usage: "Enable local only development: Defaults to true.",
 		},
 		&ccli.StringFlag{
-			Name:    "edge_address",
+			Name:    "edge_web_address",
 			Usage:   "Set the edge UI address e.g 0.0.0.0:8082",
 			EnvVars: []string{"EDGE_WEB_ADDRESS"},
 		},
 		&ccli.StringFlag{
+			Name:    "edge_host",
+			Usage:   "Set the edge host e.g localhost:8000",
+			EnvVars: []string{"EDGE_HOST"},
+		},
+		&ccli.StringFlag{
 			Name:    "edge_namespace",
-			Usage:   "Set the namespace used by the edge proxy e.g. hw.hbt.edge",
+			Usage:   "Set the namespace used by the edge proxy e.g. com.iot.edge",
 			EnvVars: []string{"EDGE_WEB_NAMESPACE"},
 		},
 		&ccli.StringFlag{
 			Name:    "edge_url",
-			Usage:   "Set the host used for the edge dashboard e.g edge.example.com",
+			Usage:   "Set the host used for the edge dashboard e.g edge.project.com",
 			EnvVars: []string{"EDGE_WEB_HOST"},
 		},
 
@@ -65,6 +70,12 @@ func setup(app *ccli.App) {
 			EnvVars: []string{"EDGE_ROOT_NAMESPACE"},
 			Value:   "edge.root",
 		},
+		&ccli.StringFlag{
+			Name:    "edge_transport",
+			Usage:   "Set the edge transport to use ,only tcp or udp for now",
+			EnvVars: []string{"EDGE_TRANSPORT"},
+			Value:   "udp",
+		},
 	)
 
 	plugins := plugin.Plugins()
@@ -73,32 +84,17 @@ func setup(app *ccli.App) {
 		if flags := p.Flags(); len(flags) > 0 {
 			app.Flags = append(app.Flags, flags...)
 		}
-
-		if cmds := p.Commands(); len(cmds) > 0 {
-			app.Commands = append(app.Commands, cmds...)
-		}
 	}
 
 	before := app.Before
 
 	app.Before = func(ctx *ccli.Context) error {
 
-		if len(ctx.String("edge_address")) > 0 {
-			//	edge.Address = ctx.String("edge_address")
-		}
-		if len(ctx.String("edge_namespace")) > 0 {
-			//	edge.Namespace = ctx.String("edge_namespace")
-		}
-		if len(ctx.String("edge_host")) > 0 {
-			//	edge.Host = ctx.String("edge_host")
-		}
-
 		for _, p := range plugins {
 			if err := p.Init(ctx); err != nil {
 				return err
 			}
 		}
-
 		// now do previous before
 		return before(ctx)
 	}

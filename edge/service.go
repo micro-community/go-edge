@@ -7,16 +7,12 @@ import (
 	"syscall"
 
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/debug/trace"
 	"github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/util/wrapper"
-
-	_ "github.com/micro-community/x-edge/node/client"
-	
 )
 
 type service struct {
@@ -30,7 +26,7 @@ type service struct {
 func newService(opts ...Option) Service {
 
 	options := newOptions(opts...)
-	
+
 	// service name
 	serviceName := options.Server.Options().Name
 
@@ -51,7 +47,7 @@ func (s *service) Name() string {
 	return s.opts.Server.Options().Name
 }
 
-// Init initialises options. Additionally it calls cmd.Init
+// Init initialize options. Additionally it calls cmd.Init
 // which parses command line flags. cmd.Init is only called
 // on first Init.
 func (s *service) Init(opts ...Option) error {
@@ -60,41 +56,46 @@ func (s *service) Init(opts ...Option) error {
 		o(&s.opts)
 	}
 
-	serviceOpts := []micro.Option{}
+	//var authOpts []auth.Option
+	var serverOpts []server.Option
+	var clientOpts []client.Option
 
-	if len(s.opts.Flags) > 0 {
-		serviceOpts = append(serviceOpts, micro.Flags(s.opts.Flags...))
+	s.opts.Action = func(ctx *cli.Context) {
+
+		if len(ctx.String("edge_web_address")) > 0 {
+			s.opts.Address = ctx.String("edge_address")
+			//clientOpts = append(clientOpts, client.WithAddress(ctx.String("edge_address")))
+		}
+		if len(ctx.String("edge_host")) > 0 {
+			s.opts.Host = ctx.String("edge_host")
+			serverOpts = append(serverOpts, server.Address(s.opts.Host))
+
+		}
+		if len(ctx.String("edge_address")) > 0 {
+			serverOpts = append(serverOpts, server.Address(ctx.String("edge_address")))
+		}
+		if name := ctx.String("edge_transport"); len(name) > 0 && s.opts.Transport.String() != name {
+			if t, ok := s.opts.Transports[name]; ok {
+				s.opts.Transport = t()
+				serverOpts = append(serverOpts, server.Transport(s.opts.Transport))
+				clientOpts = append(clientOpts, client.Transport(s.opts.Transport))
+			}
+		}
+
+		//set Opts
+		if len(serverOpts) > 0 {
+			if err := s.Server().Init(serverOpts...); err != nil {
+				logger.Fatalf("Error configuring server: %v", err)
+			}
+		}
+		//set Opts for client
+		if len(clientOpts) > 0 {
+			if err := s.Client().Init(clientOpts...); err != nil {
+				logger.Fatalf("Error configuring client: %v", err)
+			}
+		}
+
 	}
-	serviceOpts = append(serviceOpts, micro.Action(func(ctx *cli.Context) error {
-
-		if name := ctx.String("server_name"); len(name) > 0 {
-			s.opts.Name = name
-		}
-
-		if ver := ctx.String("server_version"); len(ver) > 0 {
-			s.opts.Version = ver
-		}
-
-		if id := ctx.String("server_id"); len(id) > 0 {
-			s.opts.ID = id
-		}
-
-		if addr := ctx.String("server_address"); len(addr) > 0 {
-			s.opts.Address = addr
-		}
-
-		if adv := ctx.String("server_advertise"); len(adv) > 0 {
-			s.opts.Advertise = adv
-		}
-
-		if s.opts.Action != nil {
-			s.opts.Action(ctx)
-		}
-
-		s.opts.Service.Init(serviceOpts...)
-
-		return nil
-	}))
 
 	return nil
 }
@@ -143,7 +144,7 @@ func (s *service) Start() error {
 	return nil
 }
 
-//Run edge service
+//Run edge srv node
 func (s *service) Run() error {
 
 	if err := s.Start(); err != nil {
@@ -204,9 +205,4 @@ func (s *service) Stop() error {
 	}
 
 	return <-ch
-}
-
-// return micro.service
-func (s *service) MicroService() micro.Service {
-	return s.Options().Service
 }

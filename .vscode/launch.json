@@ -1,5 +1,5 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
+    // 使用 IntelliSense 了解相关属性。
     // 悬停以查看现有属性的描述。
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
@@ -12,9 +12,10 @@
             "program": "${workspaceFolder}/example/main.go",
             "env": {},
             "args": [
-                "--server_name=micro.cn.edge.node-c",
-                "--XMicroEdgeServiceAddr=192.168.1.198:7700",
-                "--XMicroEdgeServiceTransport=tcp",
+                "--server_name=x.edge.node",
+                "--server_address=0.0.0.0:8080",
+                "--edge_host=:8000",
+                "--edge_transport=udp",
             ]
         }
     ]

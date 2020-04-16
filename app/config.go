@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"fmt"
@@ -7,24 +7,21 @@ import (
 	"github.com/micro/go-micro/v2/config/source/file"
 )
 
-//Sevice configuration and register
+//Service configuration and register
 const (
 	//RegisterTTL Time
 	RegisterTTL = 30
 	//RegisterInterval Time
 	RegisterInterval = 10
-	//Service Name
-	XMicroEdgeServiceName = "x-micro-edge"
-	// Version is a built-time-injected variable.
-	XMicroEdgeServiceVersion = "1.0.0.0"
 	//EventPublisherName is pubisher topic name
-	EventPublisherName = "x-micro-edge.pubevent"
+	EventPublisherName = "x.edge.pubevent"
 	//EventSubscriberName is subscriber topic name
-	EventSubscriberName = "x-micro-edge.subevent"
+	EventSubscriberName = "x.edge.subevent"
+	//	Transport     = "udp"
+	Host = ":8080"
+	//  AppNamespace = "x.edge"
+	HeaderPrefix = "x-edge-"
 )
-
-//XMicroEdgeServiceTransport is the current srv MicroService Name
-var XMicroEdgeServiceTransport = "tcp"
 
 //XMicroEdgeServiceAddr ip Addr
 var XMicroEdgeServiceAddr = "192.168.1.198:6600"
@@ -42,13 +39,13 @@ type Cache struct {
 
 //MicroSets define our own Micro Config
 type MicroSets struct {
-	MicroServerName       string `toml:"microservername"`
-	MicroServerAddress    string `toml:"microserveraddress"`
-	MicroRegisterTTL      int    `toml:"microregisterttl"`
-	MicroRegisterInterval int    `toml:"microregisterinterval"`
+	ServerName       string `toml:"microservername"`
+	ServerAddress    string `toml:"microserveraddress"`
+	RegisterTTL      int    `toml:"microregisterttl"`
+	RegisterInterval int    `toml:"microregisterinterval"`
 }
 
-//Config From filea
+//Config From files
 var (
 	DBConfig    Database
 	CacheConfig Cache

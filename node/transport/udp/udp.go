@@ -3,50 +3,62 @@ package udp
 
 import (
 	"bufio"
-	"encoding/gob"
 	"net"
+	"sync"
 	"time"
 
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/v2/config/cmd"
 	"github.com/micro/go-micro/v2/transport"
 )
 
-type udpTransport struct {
-	opts transport.Options
-}
-
-type udpClient struct {
-	dialOpts transport.DialOptions
-	conn     net.Conn
-	enc      *gob.Encoder
-	dec      *gob.Decoder
-	encBuf   *bufio.Writer
-	timeout  time.Duration
-}
-
-type udpSocket struct {
-	conn *net.UDPConn
-	// enc        *gob.Encoder
-	// dec        *gob.Decoder
-	encBuf     *bufio.Writer
-	timeout    time.Duration
-	packageBuf []byte
-	packageLen int
-	dstAddr    *net.UDPAddr
-	closed     bool
+func init() {
+	cmd.DefaultTransports["udp"] = NewTransport
 }
 
 //UDPServerRecvMaxLen Default UDP buffer len
-const UDPServerRecvMaxLen = 2048
+//　　UDP : 1500 - IP(20) - UDP(8) = 1472(Bytes)
+const UDPServerRecvMaxLen = 1472
 
-type udpListener struct {
-	timeout  time.Duration
-	listener *net.UDPConn
-	opts     transport.ListenOptions
+type udpTransport struct {
+	opts      transport.Options
+	listening chan struct{} // is closed when listen returns
 }
 
-func init() {
-	cmd.DefaultTransports["udp"] = NewTransport
+type udpClient struct {
+	dialOpts      transport.DialOptions
+	conn          net.Conn
+	pConn         net.PacketConn
+	encBuf        *bufio.Writer
+	timeout       time.Duration
+	dataExtractor nts.DataExtractor
+}
+
+type udpSocket struct {
+	sync.RWMutex
+	recv          chan *transport.Message
+	send          chan *transport.Message
+	conn          *net.UDPConn
+	pConn         net.PacketConn
+	encBuf        *bufio.Writer
+	timeout       time.Duration
+	dstAddr       *net.UDPAddr
+	local         string
+	remote        string
+	exit          chan bool
+	dataExtractor nts.DataExtractor
+}
+
+type udpListener struct {
+	sync.RWMutex
+	timeout  time.Duration
+	listener *net.UDPConn // current listener
+	pConn    net.PacketConn
+	//	sockets   chan *udpSocket
+	errorChan chan struct{}
+	exit      chan bool // sock exit
+	closed    chan bool // listener exit
+	opts      transport.ListenOptions
 }
 
 //NewTransport Create a udp transport
@@ -57,4 +69,3 @@ func NewTransport(opts ...transport.Option) transport.Transport {
 	}
 	return &udpTransport{opts: options}
 }
-

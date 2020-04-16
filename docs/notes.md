@@ -5,14 +5,18 @@ record something for x-edge
 ## 使用web/service的框架结构，改造x-edge
 
 问题：
+
 + 按照web/service的结构，micro.Service的位置：type service struct -> opts Options -> Service  micro.Service
     而edgeService的结构：
-    type edgeService struct {
-	    opts    service.Options
-	    service micro.Service
-    }
 
-    考虑给edgeService重新定义 Options
+```go
+    type edgeService struct {
+        opts    service.Options
+        service micro.Service
+    }
+```
+
++ 考虑给edgeService重新定义 Options
 
 + web/service中微服务Service  micro.Service，在newOptions时创建了，在web/service的Init函数中调用了micro.Service的Init，但是却并未run。
     原因：主要是web/service使用micro.Service的client，不需要run。

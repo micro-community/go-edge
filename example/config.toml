@@ -1,0 +1,12 @@
+[hosts]
+  [hosts.database]
+    address = "10.0.0.1"
+    port  = 3306
+  [hosts.cache]
+    address = "10.0.0.2"
+    port  = 6379
+[micro]
+  servername = "x-edge-service"
+  serveraddress = ":8080"
+  registerttl = 30
+  registerinterval = 10

@@ -265,7 +265,7 @@ func (s *nodeServer) Start() error {
 	}
 	s.RUnlock()
 
-	config := s.opts
+	config := s.Options()
 
 	// start listening on the transport
 	ts, err := config.Transport.Listen(config.Address)
@@ -287,10 +287,8 @@ func (s *nodeServer) Start() error {
 		for {
 			// listen for connections
 			err := ts.Accept(s.ServeConn)
-
 			// TODO: listen for messages
 			// msg := broker.Exchange(service).Consume()
-
 			select {
 			// check if we're supposed to exit
 			case <-exit:

@@ -12,7 +12,7 @@
     "titleBar.inactiveBackground": "#5e795999",
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveForeground": "#e7e7e799",
-    "statusBar.background": "#5e7959",
+   // "statusBar.background": "#5e7959",
     "statusBarItem.hoverBackground": "#352cea",
    // "statusBarItem.hoverBackground": "#759570",
     "statusBar.foreground": "#e7e7e7",
@@ -26,5 +26,6 @@
 
   "go.formatTool": "goimports",
   "go.useLanguageServer": true,
+  "editor.codeActionsOnSave":{"source.organizeImports": true},
 }
 

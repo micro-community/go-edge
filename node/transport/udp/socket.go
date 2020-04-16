@@ -21,22 +21,20 @@ func (u *udpSocket) Recv(m *transport.Message) error {
 	if m == nil {
 		return errors.New("message passed in is nil")
 	}
-
 	// set timeout if its greater than 0
 	if u.timeout > time.Duration(0) {
 		u.conn.SetDeadline(time.Now().Add(u.timeout))
 	}
+	//寻找确定disconnected的错误，t.conn代表一个实际的连接
+	//替代NEWScanner的错误
+	//scanner disconnected的错误
+	scanner := bufio.NewScanner(u.conn)
 
-	if len(u.packageBuf) > 0 {
-		m.Body = u.packageBuf
-		u.packageBuf = nil
-		//u.packageBuf = u.packageBuf[:0]
-		u.packageLen = 0
-		//
-	} else {
-		u.closed = true
-		return errors.New("Udp Recv buf is empty")
-		//return nil
+	scanner.Split(u.dataExtractor)
+
+	if scanner.Scan() {
+		m.Body = scanner.Bytes()
+		return nil
 	}
 
 	return nil
@@ -59,11 +57,7 @@ func (u *udpSocket) Send(m *transport.Message) error {
 }
 
 func (u *udpSocket) Close() error {
-	if u.closed == true {
-		u.closed = false
-	} else {
-		u.conn.Close()
-	}
 
-	return nil
+	return u.conn.Close()
+
 }

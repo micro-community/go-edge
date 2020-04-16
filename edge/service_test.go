@@ -21,7 +21,7 @@ func TestInterfaceEqual(t *testing.T) {
 	if reflect.TypeOf(ms).Kind() != reflect.TypeOf(ss).Kind() {
 		t.Errorf("different type %v : %v", ms, ss)
 	}
-	//so they are equl type
+	//so they are equal type
 
 }
 
@@ -32,11 +32,11 @@ func TestRessignVars(t *testing.T) {
 	var a = map[string]interface{}{}
 
 	var c = map[string]MyStruct{
-		"c": MyStruct{
+		"c": {
 			Name: "im c",
 		},
 	}
-	//so they are equl type
+	//so they are equal type
 	if reflect.TypeOf(b).Kind() == reflect.TypeOf(a).Kind() {
 		t.Logf("equal type %v : %v", b, a)
 	}

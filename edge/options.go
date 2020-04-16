@@ -3,12 +3,9 @@ package edge
 import (
 	"context"
 	"crypto/tls"
-	"net/http"
-	"time"
 
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/server"
@@ -19,29 +16,26 @@ import (
 type Options struct {
 	//	service.Options //inherit from service
 	Name      string
-	Version   string
+	Host      string
 	ID        string
 	Metadata  map[string]string
 	Address   string
 	Advertise string
 
-	Auth   auth.Auth
-	Client client.Client
-	Server server.Server
-
+	Auth      auth.Auth
+	Client    client.Client
+	Server    server.Server
 	Transport transport.Transport
-	Action    func(*cli.Context)
-	Flags     []cli.Flag
+	//Action for edge service
+	Action func(*cli.Context)
+	Flags  []cli.Flag
 
-	RegisterTTL      time.Duration
-	RegisterInterval time.Duration
+	//	Handler http.Handler
+	Extractor PackageExtractor
 
-	Handler http.Handler
-
+	Transports map[string]func(...transport.Option) transport.Transport
 	// Alternative Options
 	Context context.Context
-
-	Service micro.Service
 
 	Secure      bool
 	TLSConfig   *tls.Config
@@ -49,27 +43,25 @@ type Options struct {
 	BeforeStop  []func() error
 	AfterStart  []func() error
 	AfterStop   []func() error
-
-	Signal bool
+	Signal      bool
 }
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
 		Name:      DefaultName,
-		Version:   DefaultVersion,
 		ID:        DefaultID,
 		Address:   DefaultAddress,
+		Client:    DefaultClient,
 		Server:    DefaultServer,
+		Extractor: DefaultExtractor,
 		Transport: DefaultTransport,
-		Service:   micro.NewService(),
 		Context:   context.TODO(),
-		Signal:  true,
+		Signal:    true,
 	}
 
 	for _, o := range opts {
 		o(&opt)
 	}
-
 	return opt
 }
 
@@ -97,13 +89,6 @@ func ID(id string) Option {
 	}
 }
 
-// Version of the service
-func Version(v string) Option {
-	return func(o *Options) {
-		o.Version = v
-	}
-}
-
 // Metadata associated with the service
 func Metadata(md map[string]string) Option {
 	return func(o *Options) {
@@ -115,6 +100,13 @@ func Metadata(md map[string]string) Option {
 func Address(a string) Option {
 	return func(o *Options) {
 		o.Address = a
+	}
+}
+
+// Host to bind to - host:port
+func Host(a string) Option {
+	return func(o *Options) {
+		o.Host = a
 	}
 }
 
@@ -134,38 +126,17 @@ func Context(ctx context.Context) Option {
 	}
 }
 
-// RegisterTTL the service with a TTL
-func RegisterTTL(t time.Duration) Option {
-	return func(o *Options) {
-		o.RegisterTTL = t
-	}
-}
-
-// RegisterInterval Register the service with at interval
-func RegisterInterval(t time.Duration) Option {
-	return func(o *Options) {
-		o.RegisterInterval = t
-	}
-}
-
-// Handler binding
-func Handler(h http.Handler) Option {
-	return func(o *Options) {
-		o.Handler = h
-	}
-}
+// // Handler binding
+// func Handler(h http.Handler) Option {
+// 	return func(o *Options) {
+// 		o.Handler = h
+// 	}
+// }
 
 // Server to use a customer Server
 func Server(srv server.Server) Option {
 	return func(o *Options) {
 		o.Server = srv
-	}
-}
-
-// MicroService sets the micro.Service used internally
-func MicroService(s micro.Service) Option {
-	return func(o *Options) {
-		o.Service = s
 	}
 }
 
@@ -234,7 +205,7 @@ func HandleSignal(b bool) Option {
 	}
 }
 
-// Options  of edge node serivices
+// Options  of edge node services
 
 //WithExtractor edge message
 func WithExtractor(de nts.DataExtractor) Option {
@@ -251,5 +222,12 @@ func Transport(t transport.Transport) Option {
 		// Update Client and Server
 		o.Client.Init(client.Transport(t))
 		o.Server.Init(server.Transport(t))
+	}
+}
+
+//NewTransport return Newtransport func
+func NewTransport(name string, t func(...transport.Option) transport.Transport) Option {
+	return func(o *Options) {
+		o.Transports[name] = t
 	}
 }
