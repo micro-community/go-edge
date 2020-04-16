@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/micro-community/x-edge/config"
+	config "github.com/micro-community/x-edge/app"
 	ccli "github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/config/cmd"
