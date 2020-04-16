@@ -89,9 +89,15 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 		//blen, fromAddr, err := u.listener.ReadFromUDP(buf)
 		blen, fromAddr, err := u.pConn.ReadFrom(buf)
 
+		// the blen > 0 bytes returned before considering the error err.
+		if blen <= 0 {
+			continue
+		}
+
 		if err != nil {
 			u.errorChan <- struct{}{}
 		}
+
 		select {
 		case <-u.exit:
 			return nil
