@@ -11,8 +11,12 @@ import (
 	"github.com/micro/go-micro/v2/transport"
 )
 
+//UDPServerRecvMaxLen Default UDP buffer len
+const UDPServerRecvMaxLen = 1473
+
 type udpTransport struct {
-	opts transport.Options
+	opts      transport.Options
+	listening chan struct{} // is closed when listen returns
 }
 
 type udpClient struct {
@@ -24,32 +28,28 @@ type udpClient struct {
 
 type udpSocket struct {
 	sync.RWMutex
-	recv chan *transport.Message
-	send chan *transport.Message
-	conn *net.UDPConn
-	//	encBuf  *bufio.Writer
+	recv    chan *transport.Message
+	send    chan *transport.Message
+	conn    *net.UDPConn
+	pConn   net.PacketConn
+	encBuf  *bufio.Writer
 	timeout time.Duration
-	//	packageBuf []byte
-	//	packageLen int
 	dstAddr *net.UDPAddr
 	local   string
 	remote  string
 	exit    chan bool
 }
 
-//UDPServerRecvMaxLen Default UDP buffer len
-const UDPServerRecvMaxLen = 2048
-
 type udpListener struct {
 	sync.RWMutex
 	timeout  time.Duration
-	listener *net.UDPConn
-	conn     chan *udpSocket
-	// sock exit
-	exit chan bool
-	// listener exit
-	listenerexit chan bool
-	opts         transport.ListenOptions
+	listener *net.UDPConn // current listener
+	pConn    net.PacketConn
+	//	sockets   chan *udpSocket
+	errorChan chan struct{}
+	exit      chan bool // sock exit
+	closed    chan bool // listener exit
+	opts      transport.ListenOptions
 }
 
 func init() {

@@ -1,9 +1,9 @@
 package udp
 
 import (
-	"time"
-
+	"bufio"
 	"github.com/micro/go-micro/v2/transport"
+	//	"github.com/micro/go-micro/v2/util/ring"
 )
 
 //　　UDP : 1500 - IP(20) - UDP(8) = 1472(Bytes)
@@ -19,33 +19,33 @@ func (u *udpListener) Close() error {
 
 //Accept and handle a data package
 func (u *udpListener) Accept(fn func(transport.Socket)) error {
-	var tempDelay time.Duration
-
 	for {
+		buf := make([]byte, defaultUDPMaxPackageLenth)
+		//	rbuffer := ring.New(defaultUDPMaxPackageLenth),
+		//conn, err := u.listener.Accept()
+		//bytesLenth, fromAddr, err := u.listener.ReadFromUDP(buf)
+		bytesLennth, fromAddr, err := u.pConn.ReadFrom(buf)
 
+		if err != nil {
+			u.errorChan <- err
+		}
 		select {
-		case <-u.sockexit:
+		case <-u.exit:
 			return nil
-			//			encBuf := bufio.NewWriter(u.listener)
-		case c := <-u.conn:
+		case <-u.errorChan:
+			return nil
+		default:
 			sock := &udpSocket{
 				timeout: u.opts.Timeout,
-				ctx:     u.opts.Context,
 				conn:    u.listener,
-				local:   c.Remote(),
-				remote:  c.Local(),
-				closed:  c.exit,
+				pConn:   u.listener,
+				remote:  fromAddr.String(),
+				local:   u.Addr(),
+				encBuf: bufio.NewWriter(u.listener)
+				exit:   make(chan bool)
 			}
-			go func() {
-				// TODO: think of a better error response strategy
-				defer func() {
-					if r := recover(); r != nil {
-						sock.Close()
-					}
-				}()
+			go fn(sock)
 
-				fn(sock)
-			}()
 		}
 	}
 }

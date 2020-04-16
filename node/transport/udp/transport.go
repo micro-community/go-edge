@@ -2,7 +2,6 @@ package udp
 
 import (
 	"bufio"
-	"encoding/gob"
 	"net"
 
 	"github.com/micro/go-micro/v2/transport"
@@ -34,13 +33,12 @@ func (u *udpTransport) Dial(addr string, opts ...transport.DialOption) (transpor
 		dialOpts: dopts,
 		conn:     conn,
 		encBuf:   encBuf,
-		enc:      gob.NewEncoder(encBuf),
-		dec:      gob.NewDecoder(conn),
 		timeout:  u.opts.Timeout,
 	}, nil
 }
 
 func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (transport.Listener, error) {
+
 	var options transport.ListenOptions
 	for _, o := range opts {
 		o(&options)
@@ -57,12 +55,12 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	if err != nil {
 		return nil, err
 	}
-
 	return &udpListener{
 		timeout:  u.opts.Timeout,
-		conn:     make(chan *memorySocket),
+		sockets:  make(chan *udpSocket),
 		exit:     make(chan bool),
 		listener: l,
+		pConn:    l,
 		opts:     options,
 	}, nil
 }
