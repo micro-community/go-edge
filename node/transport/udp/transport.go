@@ -57,7 +57,6 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	}
 	return &udpListener{
 		timeout:  u.opts.Timeout,
-		sockets:  make(chan *udpSocket),
 		exit:     make(chan bool),
 		listener: l,
 		pConn:    l,
@@ -84,14 +83,14 @@ func (u *udpTransport) String() string {
 //Accept and handle a data package
 func (u *udpListener) Accept(fn func(transport.Socket)) error {
 	for {
-		buf := make([]byte, defaultUDPMaxPackageLenth)
+		buf := make([]byte, UDPServerRecvMaxLen)
 		//	rbuffer := ring.New(defaultUDPMaxPackageLenth),
 		//conn, err := u.listener.Accept()
-		//bytesLenth, fromAddr, err := u.listener.ReadFromUDP(buf)
-		bytesLennth, fromAddr, err := u.pConn.ReadFrom(buf)
+		//blen, fromAddr, err := u.listener.ReadFromUDP(buf)
+		blen, fromAddr, err := u.pConn.ReadFrom(buf)
 
 		if err != nil {
-			u.errorChan <- err
+			u.errorChan <- struct{}{}
 		}
 		select {
 		case <-u.exit:
@@ -100,20 +99,19 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 			return nil
 		default:
 			sock := &udpSocket{
-				timeout: u.opts.Timeout,
+				timeout: u.timeout,
 				conn:    u.listener,
 				pConn:   u.listener,
 				remote:  fromAddr.String(),
 				local:   u.Addr(),
-				encBuf: bufio.NewWriter(u.listener)
-				exit:   make(chan bool)
+				encBuf:  bufio.NewWriter(u.listener),
+				exit:    make(chan bool),
 			}
 			go fn(sock)
 
 		}
 	}
 }
-
 
 func (u *udpListener) Addr() string {
 	return u.listener.LocalAddr().String()

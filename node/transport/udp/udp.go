@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/v2/config/cmd"
 	"github.com/micro/go-micro/v2/transport"
 )
@@ -25,25 +26,27 @@ type udpTransport struct {
 }
 
 type udpClient struct {
-	dialOpts transport.DialOptions
-	conn     net.Conn
-	pConn    net.PacketConn
-	encBuf   *bufio.Writer
-	timeout  time.Duration
+	dialOpts      transport.DialOptions
+	conn          net.Conn
+	pConn         net.PacketConn
+	encBuf        *bufio.Writer
+	timeout       time.Duration
+	dataExtractor nts.DataExtractor
 }
 
 type udpSocket struct {
 	sync.RWMutex
-	recv    chan *transport.Message
-	send    chan *transport.Message
-	conn    *net.UDPConn
-	pConn   net.PacketConn
-	encBuf  *bufio.Writer
-	timeout time.Duration
-	dstAddr *net.UDPAddr
-	local   string
-	remote  string
-	exit    chan bool
+	recv          chan *transport.Message
+	send          chan *transport.Message
+	conn          *net.UDPConn
+	pConn         net.PacketConn
+	encBuf        *bufio.Writer
+	timeout       time.Duration
+	dstAddr       *net.UDPAddr
+	local         string
+	remote        string
+	exit          chan bool
+	dataExtractor nts.DataExtractor
 }
 
 type udpListener struct {

@@ -3,10 +3,8 @@ package udp
 import (
 	"bufio"
 	"errors"
-	"net"
 	"time"
 
-	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/transport"
 )
 
@@ -27,37 +25,16 @@ func (u *udpSocket) Recv(m *transport.Message) error {
 	if u.timeout > time.Duration(0) {
 		u.conn.SetDeadline(time.Now().Add(u.timeout))
 	}
+	//寻找确定disconnected的错误，t.conn代表一个实际的连接
+	//替代NEWScanner的错误
+	//scanner disconnected的错误
+	scanner := bufio.NewScanner(u.conn)
 
-	buf := make([]byte, defaultUDPMaxPackageLenth)
-	//conn, err := u.listener.Accept()
-	bytesLenth, fromAddr, err := u.listener.ReadFromUDP(buf)
-	if err != nil {
-		if ne, ok := err.(net.Error); ok && ne.Temporary() {
-			if tempDelay == 0 {
-				tempDelay = 5 * time.Millisecond
-			} else {
-				tempDelay *= 2
-			}
-			if max := 1 * time.Second; tempDelay > max {
-				tempDelay = max
-			}
-			log.Infof("udp: Accept error: %v; retrying in %v\n", err, tempDelay)
-			time.Sleep(tempDelay)
-			continue
-		}
-		return err
-	}
+	scanner.Split(u.dataExtractor)
 
-	if len(u.packageBuf) > 0 {
-		m.Body = u.packageBuf
-		u.packageBuf = nil
-		//u.packageBuf = u.packageBuf[:0]
-		u.packageLen = 0
-		//
-	} else {
-		u.closed = true
-		return errors.New("Udp Recv buf is empty")
-		//return nil
+	if scanner.Scan() {
+		m.Body = scanner.Bytes()
+		return nil
 	}
 
 	return nil
@@ -80,11 +57,7 @@ func (u *udpSocket) Send(m *transport.Message) error {
 }
 
 func (u *udpSocket) Close() error {
-	if u.closed == true {
-		u.closed = false
-	} else {
-		u.conn.Close()
-	}
 
-	return nil
+	return u.conn.Close()
+
 }
