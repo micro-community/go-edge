@@ -16,8 +16,6 @@ func (u *udpTransport) Dial(addr string, opts ...transport.DialOption) (transpor
 		opt(&dopts)
 	}
 
-	var conn net.Conn
-
 	// ctx, _ := context.WithTimeout(context.Background(), dopts.Timeout)
 	// conn, err = u.dialContext(ctx, addr)
 
@@ -45,22 +43,23 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	}
 	var err error
 
-	udpAddress, err := net.ResolveUDPAddr("udp", addr)
-	if err != nil {
-		return nil, err
-	}
+	//	udpAddress, err := net.ResolveUDPAddr("udp", addr)
+	//	if err != nil {
+	//		return nil, err
+	//	}
 
-	l, err := net.ListenUDP("udp", udpAddress)
+	//l, err := net.ListenUDP("udp", udpAddress)
+	p, err := net.ListenPacket("udp", addr)
 
 	if err != nil {
 		return nil, err
 	}
 	return &udpListener{
-		timeout:  u.opts.Timeout,
-		exit:     make(chan bool),
-		listener: l,
-		pConn:    l,
-		opts:     options,
+		timeout: u.opts.Timeout,
+		exit:    make(chan bool),
+		//		listener: l,
+		pConn: p,
+		opts:  options,
 	}, nil
 }
 
