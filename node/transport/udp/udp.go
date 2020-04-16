@@ -11,8 +11,13 @@ import (
 	"github.com/micro/go-micro/v2/transport"
 )
 
+func init() {
+	cmd.DefaultTransports["udp"] = NewTransport
+}
+
 //UDPServerRecvMaxLen Default UDP buffer len
-const UDPServerRecvMaxLen = 1473
+//　　UDP : 1500 - IP(20) - UDP(8) = 1472(Bytes)
+const UDPServerRecvMaxLen = 1472
 
 type udpTransport struct {
 	opts      transport.Options
@@ -22,6 +27,7 @@ type udpTransport struct {
 type udpClient struct {
 	dialOpts transport.DialOptions
 	conn     net.Conn
+	pConn    net.PacketConn
 	encBuf   *bufio.Writer
 	timeout  time.Duration
 }
@@ -50,10 +56,6 @@ type udpListener struct {
 	exit      chan bool // sock exit
 	closed    chan bool // listener exit
 	opts      transport.ListenOptions
-}
-
-func init() {
-	cmd.DefaultTransports["udp"] = NewTransport
 }
 
 //NewTransport Create a udp transport
