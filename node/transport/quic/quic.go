@@ -39,7 +39,6 @@ func (q *quicClient) Close() error {
 
 func (q *quicSocket) Recv(m *transport.Message) error {
 	//return q.dec.Decode(&m)
-	m.Body = make([]byte, 1024)
 	q.st.Read(m.Body)
 	//reader := bufio.NewReader(q.st)
 	data, err := ioutil.ReadAll(q.st)

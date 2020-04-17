@@ -25,7 +25,6 @@ func (u *udpClient) Send(m *transport.Message) error {
 	writer.Write(m.Body)
 	return writer.Flush()
 
-	return nil
 }
 
 func (u *udpClient) Recv(m *transport.Message) error {
