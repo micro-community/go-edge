@@ -1,10 +1,36 @@
 package server
 
 import (
+	"bufio"
+	"context"
+
 	"github.com/micro/go-micro/v2/codec"
 	"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-micro/v2/transport"
 )
+
+//DataExtractor for package pasering
+type DataExtractor = bufio.SplitFunc
+
+//DataExtractorFuncKey for ExtractorFunc
+type DataExtractorFuncKey struct{}
+
+// type stubRouter struct {
+// 	h func(context.Context, Request, interface{}) error
+// }
+
+func newOption(opt ...server.Option) server.Options {
+	opts := server.Options{
+		Codecs:   make(map[string]codec.NewCodec),
+		Metadata: map[string]string{},
+	}
+
+	for _, o := range opt {
+		o(&opts)
+	}
+
+	return opts
+}
 
 func newOptions(opt ...server.Option) server.Options {
 	opts := server.Options{
@@ -36,4 +62,14 @@ func newOptions(opt ...server.Option) server.Options {
 	}
 
 	return opts
+}
+
+// Extractor should be used to setup a extractor
+func Extractor(dex DataExtractor) server.Option {
+	return func(o *server.Options) {
+		if o.Context == nil {
+			o.Context = context.Background()
+		}
+		o.Context = context.WithValue(o.Context, DataExtractorFuncKey{}, dex)
+	}
 }

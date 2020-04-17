@@ -29,23 +29,6 @@ type nodeServer struct {
 	wg *sync.WaitGroup
 }
 
-// type stubRouter struct {
-// 	h func(context.Context, Request, interface{}) error
-// }
-
-func newOption(opt ...server.Option) server.Options {
-	opts := server.Options{
-		Codecs:   make(map[string]codec.NewCodec),
-		Metadata: map[string]string{},
-	}
-
-	for _, o := range opt {
-		o(&opts)
-	}
-
-	return opts
-}
-
 //NewServer return a new custom rpc server
 func NewServer(opts ...server.Option) server.Server {
 	options := newOption(opts...)
