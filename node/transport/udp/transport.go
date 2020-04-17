@@ -16,9 +16,6 @@ func (u *udpTransport) Dial(addr string, opts ...transport.DialOption) (transpor
 		opt(&dopts)
 	}
 
-	// ctx, _ := context.WithTimeout(context.Background(), dopts.Timeout)
-	// conn, err = u.dialContext(ctx, addr)
-
 	conn, err := net.DialTimeout("udp", addr, dopts.Timeout)
 
 	if err != nil {
@@ -43,23 +40,23 @@ func (u *udpTransport) Listen(addr string, opts ...transport.ListenOption) (tran
 	}
 	var err error
 
-	//	udpAddress, err := net.ResolveUDPAddr("udp", addr)
-	//	if err != nil {
-	//		return nil, err
-	//	}
+	udpAddress, err := net.ResolveUDPAddr("udp", addr)
+	if err != nil {
+		return nil, err
+	}
 
-	//l, err := net.ListenUDP("udp", udpAddress)
-	p, err := net.ListenPacket("udp", addr)
+	l, err := net.ListenUDP("udp", udpAddress)
+	//p, err := net.ListenPacket("udp", addr)
 
 	if err != nil {
 		return nil, err
 	}
 	return &udpListener{
-		timeout: u.opts.Timeout,
-		exit:    make(chan bool),
-		//		listener: l,
-		pConn: p,
-		opts:  options,
+		timeout:  u.opts.Timeout,
+		exit:     make(chan bool),
+		listener: l,
+		pConn:    l,
+		opts:     options,
 	}, nil
 }
 
@@ -67,6 +64,10 @@ func (u *udpTransport) Init(opts ...transport.Option) error {
 	for _, o := range opts {
 		o(&u.opts)
 	}
+	if de, ok := deFromContext(u.opts.Context); ok {
+		u.dataExtractor = de
+	}
+
 	return nil
 }
 
@@ -85,18 +86,16 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 		buf := make([]byte, UDPServerRecvMaxLen)
 		//	rbuffer := ring.New(defaultUDPMaxPackageLenth),
 		//conn, err := u.listener.Accept()
-		//blen, fromAddr, err := u.listener.ReadFromUDP(buf)
-		blen, fromAddr, err := u.pConn.ReadFrom(buf)
+		//n, fromAddr, err := u.listener.ReadFromUDP(buf)
+		n, fromAddr, err := u.pConn.ReadFrom(buf)
 
-		// the blen > 0 bytes returned before considering the error err.
-		if blen <= 0 {
+		// the n > 0 bytes returned before considering the error err.
+		if n <= 0 {
 			continue
 		}
-
 		if err != nil {
 			u.errorChan <- struct{}{}
 		}
-
 		select {
 		case <-u.exit:
 			return nil
@@ -106,11 +105,11 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 			sock := &udpSocket{
 				timeout: u.timeout,
 				conn:    u.listener,
-				pConn:   u.listener,
-				remote:  fromAddr.String(),
-				local:   u.Addr(),
-				encBuf:  bufio.NewWriter(u.listener),
-				exit:    make(chan bool),
+				//				pConn:   u.listener,
+				remote: fromAddr.String(),
+				local:  u.Addr(),
+				encBuf: bufio.NewWriter(u.listener),
+				exit:   make(chan bool),
 			}
 			go fn(sock)
 

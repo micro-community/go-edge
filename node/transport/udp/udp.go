@@ -21,8 +21,9 @@ func init() {
 const UDPServerRecvMaxLen = 1472
 
 type udpTransport struct {
-	opts      transport.Options
-	listening chan struct{} // is closed when listen returns
+	opts          transport.Options
+	dataExtractor nts.DataExtractor
+	listening     chan struct{} // is closed when listen returns
 }
 
 type udpClient struct {
@@ -36,10 +37,10 @@ type udpClient struct {
 
 type udpSocket struct {
 	sync.RWMutex
-	recv          chan *transport.Message
-	send          chan *transport.Message
-	conn          *net.UDPConn
-	pConn         net.PacketConn
+	recv chan *transport.Message
+	send chan *transport.Message
+	conn *net.UDPConn
+	//pConn         net.PacketConn
 	encBuf        *bufio.Writer
 	timeout       time.Duration
 	dstAddr       *net.UDPAddr

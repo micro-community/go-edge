@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/transport"
 )
 
@@ -259,7 +260,9 @@ func TestUDPListener(t *testing.T) {
 		t.Fatal("Expected error binding to :8080 got nil")
 	}
 }
+
 func TestUDPTransport(t *testing.T) {
+
 	tr := NewTransport()
 
 	udpListener, err := tr.Listen("127.0.0.1:8080")
@@ -267,6 +270,8 @@ func TestUDPTransport(t *testing.T) {
 		t.Fatalf("Unexpected error listening %v", err)
 	}
 	defer udpListener.Close()
+
+	errch := make(chan error, 2)
 
 	// accept
 	go func() {
@@ -286,7 +291,8 @@ func TestUDPTransport(t *testing.T) {
 				}
 			}
 		}); err != nil {
-			t.Fatalf("Unexpected error accepting %v", err)
+			errch <- errors.New("test", "Unexpected error accepting", -1)
+			//t.Fatalf("Unexpected error accepting %v", err)
 		}
 	}()
 
@@ -313,4 +319,8 @@ func TestUDPTransport(t *testing.T) {
 		}
 	}
 
+	select {
+	case errinfo := <-errch:
+		t.Fatalf("Unexpected error accepting %v", errinfo)
+	}
 }

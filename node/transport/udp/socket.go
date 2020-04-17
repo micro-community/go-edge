@@ -3,6 +3,7 @@ package udp
 import (
 	"bufio"
 	"errors"
+	"io/ioutil"
 	"time"
 
 	"github.com/micro/go-micro/v2/transport"
@@ -25,19 +26,22 @@ func (u *udpSocket) Recv(m *transport.Message) error {
 	if u.timeout > time.Duration(0) {
 		u.conn.SetDeadline(time.Now().Add(u.timeout))
 	}
+
+	data, err := ioutil.ReadAll(u.conn)
+	m.Body = data
+
+	return err
 	//寻找确定disconnected的错误，t.conn代表一个实际的连接
 	//替代NEWScanner的错误
 	//scanner disconnected的错误
-	scanner := bufio.NewScanner(u.conn)
+	// scanner := bufio.NewScanner(u.conn)
+	//scanner.Split(u.dataExtractor)
 
-	scanner.Split(u.dataExtractor)
-
-	if scanner.Scan() {
-		m.Body = scanner.Bytes()
-		return nil
-	}
-
-	return nil
+	// if scanner.Scan() {
+	// 	m.Body = scanner.Bytes()
+	// 	return nil
+	// }
+	//return nil
 }
 
 func (u *udpSocket) Send(m *transport.Message) error {
