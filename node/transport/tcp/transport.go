@@ -175,7 +175,7 @@ func (t *tcpTransportListener) Accept(fn func(transport.Socket)) error {
 		}
 
 		encBuf := bufio.NewWriter(c)
-		sock := &tcpTransportSocket{
+		sock := &tcpSocket{
 			timeout:       t.timeout,
 			conn:          c,
 			encBuf:        encBuf,

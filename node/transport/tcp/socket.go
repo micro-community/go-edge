@@ -11,22 +11,22 @@ import (
 	"github.com/micro/go-micro/v2/transport"
 )
 
-type tcpTransportSocket struct {
+type tcpSocket struct {
 	conn          net.Conn
 	encBuf        *bufio.Writer
 	timeout       time.Duration
 	dataExtractor nts.DataExtractor
 }
 
-func (t *tcpTransportSocket) Local() string {
+func (t *tcpSocket) Local() string {
 	return t.conn.LocalAddr().String()
 }
 
-func (t *tcpTransportSocket) Remote() string {
+func (t *tcpSocket) Remote() string {
 	return t.conn.RemoteAddr().String()
 }
 
-func (t *tcpTransportSocket) Recv(m *transport.Message) error {
+func (t *tcpSocket) Recv(m *transport.Message) error {
 	if m == nil {
 		return errors.New("message passed in is nil")
 	}
@@ -49,7 +49,7 @@ func (t *tcpTransportSocket) Recv(m *transport.Message) error {
 	return errorTransportDataExtract
 }
 
-func (t *tcpTransportSocket) Send(m *transport.Message) error {
+func (t *tcpSocket) Send(m *transport.Message) error {
 	// set timeout if its greater than 0
 	if t.timeout > time.Duration(0) {
 		t.conn.SetDeadline(time.Now().Add(t.timeout))
@@ -63,6 +63,6 @@ func (t *tcpTransportSocket) Send(m *transport.Message) error {
 	//return err
 }
 
-func (t *tcpTransportSocket) Close() error {
+func (t *tcpSocket) Close() error {
 	return t.conn.Close()
 }
