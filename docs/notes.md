@@ -24,4 +24,7 @@ record something for x-edge
     但是对于x-edge来说micro.Service的server需要run起来，因为x-edge需要被其他服务调用，向通过tcp/udp向下发送命令，或者x-edge需要用broker向订阅段推送消息。
     这里需要考虑为x-edge启动micro.Service的server
 
-    micro.web
++ edege 的opinion结构，里面有server和tranport，newService函数里面，先new opinion函数，
+    然后就用server的name，所以必须在new opinion函数中new server，而这个server是我们自己edge server
+    所以在new opinion函数，就定义了defaultServer，且直接赋值
+    同时，也定义了defaultTransport，且直接赋值
