@@ -1,7 +1,6 @@
 package udp
 
 import (
-	"bufio"
 	"errors"
 	"io/ioutil"
 	"time"
@@ -52,11 +51,11 @@ func (u *udpSocket) Send(m *transport.Message) error {
 	// if err := u.enc.Encode(m); err != nil {
 	// 	return err
 	// }
-
-	writer := bufio.NewWriter(u.conn)
-	writer.Write(m.Body)
-	return writer.Flush()
-
+	u.conn.WriteTo(m.Body, u.dstAddr)
+	//writer := bufio.NewWriter(u.conn)
+	//writer.Write(m.Body)
+	//return writer.Flush()
+	return nil
 	//return u.encBuf.Flush()
 }
 

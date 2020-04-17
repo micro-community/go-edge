@@ -83,12 +83,10 @@ func (u *udpTransport) String() string {
 //Accept and handle a data package
 func (u *udpListener) Accept(fn func(transport.Socket)) error {
 	for {
+
 		buf := make([]byte, UDPServerRecvMaxLen)
 		//	rbuffer := ring.New(defaultUDPMaxPackageLenth),
-		//conn, err := u.listener.Accept()
-		//n, fromAddr, err := u.listener.ReadFromUDP(buf)
 		n, fromAddr, err := u.pConn.ReadFrom(buf)
-
 		// the n > 0 bytes returned before considering the error err.
 		if n <= 0 {
 			continue
@@ -105,11 +103,12 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 			sock := &udpSocket{
 				timeout: u.timeout,
 				conn:    u.listener,
-				//				pConn:   u.listener,
-				remote: fromAddr.String(),
-				local:  u.Addr(),
-				encBuf: bufio.NewWriter(u.listener),
-				exit:   make(chan bool),
+				pConn:   u.listener,
+				dstAddr: fromAddr,
+				remote:  fromAddr.String(),
+				local:   u.Addr(),
+				encBuf:  bufio.NewWriter(u.listener),
+				exit:    make(chan bool),
 			}
 			go fn(sock)
 
