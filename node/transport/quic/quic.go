@@ -4,6 +4,7 @@ package quic
 import (
 	"context"
 	"crypto/tls"
+	"io/ioutil"
 	"time"
 
 	quic "github.com/lucas-clemente/quic-go"
@@ -37,14 +38,21 @@ func (q *quicClient) Close() error {
 }
 
 func (q *quicSocket) Recv(m *transport.Message) error {
-	return q.dec.Decode(&m)
+	//return q.dec.Decode(&m)
+	m.Body = make([]byte, 1024)
+	q.st.Read(m.Body)
+	//reader := bufio.NewReader(q.st)
+	data, err := ioutil.ReadAll(q.st)
+	m.Body = data
+	return err
 }
 
 func (q *quicSocket) Send(m *transport.Message) error {
 	// set the write deadline
 	q.st.SetWriteDeadline(time.Now().Add(time.Second * 10))
-	// send the data
-	return q.enc.Encode(m)
+	q.st.Write(m.Body)
+	return nil
+
 }
 
 func (q *quicSocket) Close() error {
