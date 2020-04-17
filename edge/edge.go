@@ -3,9 +3,14 @@ package edge
 import (
 	"bufio"
 
+	"github.com/micro-community/x-edge/app/cmd"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/server"
 )
+
+func init() {
+	cmd.Init()
+}
 
 // Service is a edge srv node running in edge process
 type Service interface {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 
+	"github.com/micro-community/x-edge/app"
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/auth"
@@ -58,10 +59,13 @@ func newOptions(opts ...Option) Options {
 		Context:   context.TODO(),
 		Signal:    true,
 	}
-
 	for _, o := range opts {
 		o(&opt)
 	}
+	if opt.Host == "" {
+		opt.Host = app.Host
+	}
+
 	return opt
 }
 

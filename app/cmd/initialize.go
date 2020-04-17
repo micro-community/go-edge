@@ -9,12 +9,8 @@ import (
 	"github.com/micro/micro/v2/plugin/build"
 )
 
-func init() {
-	initApp()
-}
-
-// initApp initialize edge app to do some basic config
-func initApp(options ...micro.Option) {
+// Init initialize edge app to do some basic config
+func Init(options ...micro.Option) {
 
 	setupApp(cmd.App(), options...)
 
