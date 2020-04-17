@@ -6,6 +6,7 @@ import (
 	"sync"
 	"syscall"
 
+	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
@@ -75,8 +76,11 @@ func (s *service) Init(opts ...Option) error {
 			serverOpts = append(serverOpts, server.Address(ctx.String("edge_address")))
 		}
 		if name := ctx.String("edge_transport"); len(name) > 0 && s.opts.Transport.String() != name {
+			//to see if we have a setting up from flag or env
 			if t, ok := s.opts.Transports[name]; ok {
 				s.opts.Transport = t()
+				// to remember we have a extractor to set
+				s.opts.Transport.Init(nts.WithExtractor(s.opts.Extractor))
 				serverOpts = append(serverOpts, server.Transport(s.opts.Transport))
 				clientOpts = append(clientOpts, client.Transport(s.opts.Transport))
 			}

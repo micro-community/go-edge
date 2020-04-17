@@ -82,6 +82,7 @@ func (e *edgeApp) Init(opts ...Option) error {
 	edgeOptions := []nedge.Option{}
 
 	if e.opts.EdgeTransport != nil {
+		//setup transport for edge
 		edgeOptions = append(edgeOptions, nedge.Transport(e.opts.EdgeTransport))
 	}
 	if strings.Trim(e.opts.EdgeHost, " ") != "" {
