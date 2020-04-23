@@ -50,6 +50,7 @@ type Option func(*Options)
 func newOptions(opts ...Option) Options {
 	opt := Options{
 		MicroService: micro.NewService(),
+		Edge:         nedge.NewServer(),
 		Context:      context.TODO(),
 	}
 
@@ -57,12 +58,6 @@ func newOptions(opts ...Option) Options {
 		o(&opt)
 	}
 
-	if opt.MicroService == nil {
-		opt.MicroService = micro.NewService()
-	}
-	if opt.Edge == nil {
-		opt.Edge = nedge.NewServer()
-	}
 	return opt
 }
 

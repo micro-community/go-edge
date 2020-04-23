@@ -3,7 +3,7 @@ package main
 import (
 	//we should use this not x-edge/edge which is a internal service
 	edge "github.com/micro-community/x-edge"
-	"github.com/micro-community/x-edge/node/transport/udp"
+	"github.com/micro-community/x-edge/node/transport/tcp"
 	"github.com/micro/cli/v2"
 	log "github.com/micro/go-micro/v2/logger"
 )
@@ -15,14 +15,16 @@ var (
 )
 
 func main() {
-	// Register Handler
-	//protocol.RegisterProtocolHandler(service.Server(), new(handler.Protocol))
+
 	// Register Subscriber
 	//eventbroker.RegisterMessageSubscriber(service)
 	// Register Publisher
 	//eventbroker.RegisterMessagePublisher(service)
 
-	srv := edge.NewService(edge.EgTransport(udp.NewTransport()), edge.Version("v1.0.0"))
+	srv := edge.NewService(
+		edge.EgTransport(tcp.NewTransport()),
+		edge.Version("v1.0.0"))
+	//edge.EgExtractor(dataExtractor)
 
 	srv.Init(edge.Action(func(ctx *cli.Context) {
 
@@ -32,6 +34,9 @@ func main() {
 		}
 
 	}))
+
+	// Register Handler
+	//protocol.RegisterProtocolHandler(service.Server(), new(handler.Protocol))
 
 	// Run service
 	if err := srv.Run(); err != nil {

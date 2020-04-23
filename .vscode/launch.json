@@ -9,13 +9,13 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/example/main.go",
+            "program": "${workspaceFolder}/example",
             "env": {},
             "args": [
                 "--server_name=x.edge.node",
                 "--server_address=0.0.0.0:8080",
                 "--edge_host=:8000",
-                "--edge_transport=udp",
+                "--edge_transport=tcp",
             ]
         }
     ]

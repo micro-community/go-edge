@@ -58,12 +58,10 @@ func newOptions(opts ...Option) Options {
 		Transport: DefaultTransport,
 		Context:   context.TODO(),
 		Signal:    true,
+		Host:      app.Host,
 	}
 	for _, o := range opts {
 		o(&opt)
-	}
-	if opt.Host == "" {
-		opt.Host = app.Host
 	}
 
 	return opt
