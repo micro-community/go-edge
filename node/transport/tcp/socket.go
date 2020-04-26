@@ -9,6 +9,7 @@ import (
 
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/go-micro/v2/transport"
+	"github.com/micro/go-micro/v2/util/log"
 )
 
 type tcpSocket struct {
@@ -44,6 +45,8 @@ func (t *tcpSocket) Recv(m *transport.Message) error {
 	if scanner.Scan() {
 		m.Body = scanner.Bytes()
 		return nil
+	} else {
+		log.Errorf("Scan fail ", scanner.Err().Error())
 	}
 
 	return errorTransportDataExtract

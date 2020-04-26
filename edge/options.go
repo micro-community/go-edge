@@ -49,17 +49,19 @@ type Options struct {
 
 func newOptions(opts ...Option) Options {
 	opt := Options{
-		Name:      DefaultName,
-		ID:        DefaultID,
-		Address:   DefaultAddress,
-		Client:    DefaultClient,
-		Server:    DefaultServer,
-		Extractor: DefaultExtractor,
-		Transport: DefaultTransport,
-		Context:   context.TODO(),
-		Signal:    true,
-		Host:      app.Host,
+		Name:       DefaultName,
+		ID:         DefaultID,
+		Address:    DefaultAddress,
+		Client:     DefaultClient,
+		Server:     DefaultServer,
+		Extractor:  DefaultExtractor,
+		Transport:  DefaultTransport,
+		Transports: DefaultTransports,
+		Context:    context.TODO(),
+		Signal:     true,
+		Host:       app.Host,
 	}
+
 	for _, o := range opts {
 		o(&opt)
 	}

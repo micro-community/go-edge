@@ -90,6 +90,8 @@ func (e *edgeApp) Init(opts ...Option) error {
 	}
 	if e.opts.Extractor != nil {
 		edgeOptions = append(edgeOptions, nedge.WithExtractor(e.opts.Extractor))
+	} else {
+		edgeOptions = append(edgeOptions, nedge.WithExtractor(nedge.DefaultExtractor))
 	}
 
 	e.opts.Edge.Init(edgeOptions...)

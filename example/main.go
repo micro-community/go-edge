@@ -23,8 +23,8 @@ func main() {
 
 	srv := edge.NewService(
 		edge.EgTransport(tcp.NewTransport()),
-		edge.Version("v1.0.0"))
-	//edge.EgExtractor(dataExtractor)
+		edge.Version("v1.0.0"),
+		edge.EgExtractor(dataExtractor))
 
 	srv.Init(edge.Action(func(ctx *cli.Context) {
 
