@@ -1,4 +1,6 @@
 {
+  "editor.tabSize": 2,
+  "extensions.ignoreRecommendations": true,
   "workbench.colorCustomizations": {
     "activityBar.background": "#759570",
     "activityBar.activeBorder": "#cfd3ef",
@@ -20,12 +22,12 @@
     "sideBar.border": "#759570",
     "editorGroup.border": "#759570"
   },
+  "go.lintOnSave": "file",
+  "go.vetOnSave": "package",
+  "go.useCodeSnippetsOnFunctionSuggest": true,
   "go.testFlags": ["-v"],
-
   "cSpell.allowCompoundWords": true,
-
   "go.formatTool": "goimports",
-  "go.useLanguageServer": true,
   "editor.codeActionsOnSave":{"source.organizeImports": true},
 }
 

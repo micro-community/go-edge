@@ -292,7 +292,6 @@ func TestUDPTransport(t *testing.T) {
 			}
 		}); err != nil {
 			errch <- errors.New("test", "Unexpected error accepting", -1)
-			//t.Fatalf("Unexpected error accepting %v", err)
 		}
 	}()
 
