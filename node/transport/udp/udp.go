@@ -48,6 +48,9 @@ type udpSocket struct {
 	remote        string
 	exit          chan bool
 	dataExtractor nts.DataExtractor
+	packageBuf    []byte
+	packageLen    int
+	closed        bool
 }
 
 type udpListener struct {

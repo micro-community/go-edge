@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"runtime/debug"
 	"sync"
 	"time"
 
@@ -51,7 +50,6 @@ func (s *nodeServer) ServeConn(sock transport.Socket) {
 
 		if r := recover(); r != nil {
 			log.Info("panic recovered: ", r)
-			log.Info(string(debug.Stack()))
 		}
 	}()
 
@@ -64,7 +62,7 @@ func (s *nodeServer) ServeConn(sock transport.Socket) {
 		if err := sock.Recv(&msg); err != nil {
 			return
 		}
-
+		continue
 		//as a key to  represent a session.
 		id := sock.Local() + "-" + sock.Remote()
 
