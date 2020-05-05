@@ -2,7 +2,6 @@ package udp
 
 import (
 	"errors"
-	"io/ioutil"
 	"time"
 
 	"github.com/micro/go-micro/v2/transport"
@@ -26,21 +25,15 @@ func (u *udpSocket) Recv(m *transport.Message) error {
 		u.conn.SetDeadline(time.Now().Add(u.timeout))
 	}
 
-	data, err := ioutil.ReadAll(u.conn)
-	m.Body = data
-
-	return err
-	//寻找确定disconnected的错误，t.conn代表一个实际的连接
-	//替代NEWScanner的错误
-	//scanner disconnected的错误
-	// scanner := bufio.NewScanner(u.conn)
-	//scanner.Split(u.dataExtractor)
-
-	// if scanner.Scan() {
-	// 	m.Body = scanner.Bytes()
-	// 	return nil
-	// }
-	//return nil
+	if len(u.packageBuf) > 0 {
+		m.Body = u.packageBuf
+		u.packageBuf = nil
+		u.packageLen = 0
+	} else {
+		u.closed = true
+		return errors.New("Udp Recv buf is empty")
+	}
+	return nil
 }
 
 func (u *udpSocket) Send(m *transport.Message) error {
@@ -61,6 +54,11 @@ func (u *udpSocket) Send(m *transport.Message) error {
 
 func (u *udpSocket) Close() error {
 
-	return u.conn.Close()
+	if u.closed == true {
+		u.closed = false
+	} else {
+		u.conn.Close()
+	}
 
+	return nil
 }
