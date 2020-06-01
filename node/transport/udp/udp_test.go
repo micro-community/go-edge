@@ -24,7 +24,7 @@ func expectedPort(t *testing.T, expected string, lsn transport.Listener) {
 func TestUDPTransportPortRange(t *testing.T) {
 	tp := NewTransport()
 
-	lsn1, err := tp.Listen(":44444-44448")
+	lsn1, err := tp.Listen(":44444-44445")
 	if err != nil {
 		t.Errorf("Did not expect an error, got %s", err)
 	}
@@ -294,6 +294,8 @@ func TestUDPTransport(t *testing.T) {
 			errch <- errors.New("test", "Unexpected error accepting", -1)
 		}
 	}()
+
+	time.Sleep(time.Second)
 
 	// dial
 	c, err := tr.Dial("127.0.0.1:8080")

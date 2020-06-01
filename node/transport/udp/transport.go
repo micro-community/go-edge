@@ -101,14 +101,17 @@ func (u *udpListener) Accept(fn func(transport.Socket)) error {
 			return nil
 		default:
 			sock := &udpSocket{
-				timeout: u.timeout,
-				conn:    u.listener,
-				pConn:   u.listener,
-				dstAddr: fromAddr,
-				remote:  fromAddr.String(),
-				local:   u.Addr(),
-				encBuf:  bufio.NewWriter(u.listener),
-				exit:    make(chan bool),
+				timeout:    u.timeout,
+				conn:       u.listener,
+				pConn:      u.listener,
+				dstAddr:    fromAddr,
+				remote:     fromAddr.String(),
+				local:      u.Addr(),
+				encBuf:     bufio.NewWriter(u.listener),
+				exit:       make(chan bool),
+				packageBuf: buf,
+				packageLen: n,
+				closed:     false,
 			}
 			go fn(sock)
 
