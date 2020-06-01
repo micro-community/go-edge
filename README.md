@@ -44,6 +44,6 @@ It supports raw tcp/udp and http in future.
 ## How to Use
 
 ```bash
-go get -u -v github.com/micro-community/x-edge
+go get github.com/micro-community/x-edge
 
 ```
