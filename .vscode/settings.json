@@ -4,13 +4,16 @@
   "workbench.colorCustomizations": {
 
   },
+  "go.useLanguageServer": true,
   "go.lintOnSave": "file",
   "go.vetOnSave": "package",
   "go.useCodeSnippetsOnFunctionSuggest": true,
-  "go.testFlags": ["-v"],
+  "go.testFlags": [
+    "-v"
+  ],
   "go.testTimeout": "10s",
-  "cSpell.allowCompoundWords": true,
   "go.formatTool": "goimports",
+  "cSpell.allowCompoundWords": true,
   "editor.codeActionsOnSave":{"source.organizeImports": true},
 }
 
