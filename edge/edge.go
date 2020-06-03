@@ -3,7 +3,7 @@ package edge
 import (
 	"bufio"
 
-	"github.com/micro-community/x-edge/app/cmd"
+	"github.com/micro-community/x-edge/cmd"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/server"
 )

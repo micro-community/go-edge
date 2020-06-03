@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 
-	"github.com/micro-community/x-edge/app"
+	"github.com/micro-community/x-edge/cmd"
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/auth"
@@ -59,7 +59,7 @@ func newOptions(opts ...Option) Options {
 		Transports: DefaultTransports,
 		Context:    context.TODO(),
 		Signal:     true,
-		Host:       app.Host,
+		Host:       cmd.Host,
 	}
 
 	for _, o := range opts {
