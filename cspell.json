@@ -13,14 +13,18 @@
     "words": [
         "dopts",
         "errch",
+        "Infof",
         "mtype",
         "musl",
         "nclient",
+        "nedge",
+        "nserver",
         "rabbitmq",
         "rcvr",
         "registerttl",
         "replyv",
         "rqst",
+        "uuid",
         "xmlc"
     ],
     // flagWords - list of words to be always considered incorrect
