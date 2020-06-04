@@ -8,7 +8,6 @@ import (
 
 	nts "github.com/micro-community/x-edge/node/transport"
 	"github.com/micro/cli/v2"
-	"github.com/micro/go-micro/v2/auth"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/debug/trace"
 	"github.com/micro/go-micro/v2/logger"
@@ -32,10 +31,10 @@ func newService(opts ...Option) Service {
 	serviceName := options.Server.Options().Name
 
 	// TODO: better accessors
-	authFn := func() auth.Auth { return options.Auth }
+	//authFn := func() auth.Auth { return options.Auth }
 
 	// wrap client to inject From-Service header on any calls
-	options.Client = wrapper.FromService(serviceName, options.Client, authFn)
+	options.Client = wrapper.FromService(serviceName, options.Client)
 	options.Client = wrapper.TraceCall(serviceName, trace.DefaultTracer, options.Client)
 
 	return &service{
