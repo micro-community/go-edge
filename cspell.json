@@ -11,9 +11,11 @@
     "enabled": true,
     // words - list of words to be always considered correct
     "words": [
+        "ccli",
         "dopts",
         "errch",
         "Infof",
+        "mconfig",
         "mtype",
         "musl",
         "nclient",
