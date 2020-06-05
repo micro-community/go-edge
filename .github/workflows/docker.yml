@@ -4,6 +4,17 @@ on:
   push:
     branches:
     - master
+    tags:
+      - v*
+    paths:
+      - '**'
+      - '!**.md'
+      - '!**.yml'
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+      - '!**.yml'
 
 jobs:
   build:
