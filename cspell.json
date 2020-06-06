@@ -17,6 +17,7 @@
         "Infof",
         "mconfig",
         "mtype",
+        "mucp",
         "musl",
         "nclient",
         "nedge",

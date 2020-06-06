@@ -6,7 +6,7 @@
   },
   "go.useLanguageServer": true,
   "go.lintOnSave": "file",
-  "go.vetOnSave": "package",
+  "go.vetOnSave": "file",
   "go.useCodeSnippetsOnFunctionSuggest": true,
   "go.testFlags": [
     "-v"
