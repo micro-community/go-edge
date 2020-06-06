@@ -32,10 +32,9 @@ jobs:
       run: |
         go get -v -t -d ./...
     - name: Build
-      run: go build ./example/
-    # - name: Run tests
-    #   id: tests
-    #   env:
-    #     IN_TRAVIS_CI: yes
-    #   run: go test -v ./...
-
+      run: go build example/main.go example/extractor.go
+    - name: Run tests
+      id: tests
+      run: |
+        cd example
+        go test -v ./...
