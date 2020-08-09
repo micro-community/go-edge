@@ -112,29 +112,29 @@ func (c *codecBuffer) Write(r *codec.Message, b interface{}) error {
 		m.Header = map[string]string{}
 	}
 
-	// the body being sent
-	var body []byte
-
-	// is it a raw frame?
-	if v, ok := b.(*raw.Frame); ok {
-		body = v.Data
-		// if we have encoded data just send it
-	} else if len(r.Body) > 0 {
-		body = r.Body
-		// write the body to codec
-	} else if err := c.codec.Write(m, b); err != nil {
-		c.buf.Reset()
-		// no body to write
-		if err := c.codec.Write(m, nil); err != nil {
-			return err
-		}
-	} else {
-		// set the body
-		body = c.buf.WBytes()
+	if v, ok := b.(*codec.Message); ok {
+		m.Body = v.Body
 	}
+	// is it a raw frame?
+	// if v, ok := b.(*raw.Frame); ok {
+	// 	body = v.Data
+	// 	// if we have encoded data just send it
+	// } else if len(r.Body) > 0 {
+	// 	body = r.Body
+	// 	// write the body to codec
+	// } else if err := c.codec.Write(m, b); err != nil {
+	// 	c.buf.Reset()
+	// 	// no body to write
+	// 	if err := c.codec.Write(m, nil); err != nil {
+	// 		return err
+	// 	}
+	// } else {
+	// 	// set the body
+	// 	body = c.buf.WBytes()
+	// }
 
 	// Set content type if theres content
-	if len(body) > 0 {
+	if len(m.Body) > 0 {
 		m.Header["Content-Type"] = c.req.Header["Content-Type"]
 	}
 
