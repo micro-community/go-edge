@@ -11,16 +11,23 @@
     "enabled": true,
     // words - list of words to be always considered correct
     "words": [
+        "ccli",
         "dopts",
         "errch",
+        "Infof",
+        "mconfig",
         "mtype",
+        "mucp",
         "musl",
         "nclient",
+        "nedge",
+        "nserver",
         "rabbitmq",
         "rcvr",
         "registerttl",
         "replyv",
         "rqst",
+        "uuid",
         "xmlc"
     ],
     // flagWords - list of words to be always considered incorrect

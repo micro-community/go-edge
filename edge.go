@@ -9,7 +9,7 @@ import (
 	log "github.com/micro/go-micro/v2/logger"
 )
 
-//Edge config locate in x-edge/app
+//Edge config locate in x-edge/cmd
 
 //Service of edge srv
 type Service interface {

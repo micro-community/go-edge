@@ -5,7 +5,7 @@ It supports raw tcp/udp and http in future.
 
 ## instruction
 
-+ 当前项目还处于draft状态因为工作关系，在断断续续开发，变动可能会很大.
++ 当前项目还处于draft状态因为工作关系,变动可能会很大.
 
 ## Arch Spec
 
@@ -38,12 +38,12 @@ It supports raw tcp/udp and http in future.
 
 + config better than code 配置优于代码
 + conversion better than config 约定优于配置
-+ protocol data unit of each type mappping to a handler 每一个类协议数据包mapping 到一个具体handle
++ protocol data unit of each type mapping to a handler 每一个类协议数据包mapping 到一个具体handle
 + 约定协议数据包的分割方式
 
 ## How to Use
 
 ```bash
-go get -u -v github.com/micro-community/x-edge
+go get github.com/micro-community/x-edge
 
 ```

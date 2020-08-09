@@ -1,4 +1,4 @@
-package app
+package cmd
 
 import "fmt"
 
@@ -9,8 +9,8 @@ var (
 	BuildDate string
 
 	Name        = "x-edge"
-	Description = "a go-micro edge server app"
-	version     = "2.0.0"
+	Description = "an edge connection framework"
+	version     = "2.0.0-alpha"
 )
 
 //BuildVersion for framework

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	config "github.com/micro-community/x-edge/app"
 	ccli "github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/config/cmd"
@@ -15,9 +14,9 @@ func Init(options ...micro.Option) {
 	setupApp(cmd.App(), options...)
 
 	cmd.Init(
-		cmd.Name(config.Name),
-		cmd.Description(config.Description),
-		cmd.Version(config.BuildVersion()),
+		cmd.Name(Name),
+		cmd.Description(Description),
+		cmd.Version(BuildVersion()),
 	)
 }
 

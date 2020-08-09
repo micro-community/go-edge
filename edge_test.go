@@ -1,6 +1,7 @@
 package edge
 
 import (
+	"fmt"
 	"reflect"
 	"sync"
 	"testing"
@@ -20,20 +21,19 @@ func TestInterfaceEqual(t *testing.T) {
 	//so they are equal type
 
 }
+
 func TestFunction(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
 	//r := memory.NewRegistry(memory.Services(test.Data))
 
-	// we can't test fn.Init as it parses the command line
-	// fn.Init()
-
 	ch := make(chan error, 2)
 
 	go func() {
-		// run service
+		fmt.Println("doing sth")
 		ch <- nil
+		wg.Done()
 	}()
 
 	// wait for start

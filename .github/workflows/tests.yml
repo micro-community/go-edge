@@ -1,29 +1,40 @@
-name: Run tests
-on: [push]
+name: Run x-edge tests
+on:
+  push:
+    branches:
+    - master
+    - develop
+    tags:
+      - v*
+    paths:
+      - '**'
+      - '!**.md'
+      - '!**.yml'
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+      - '!**.yml'
 
 jobs:
-
   test:
     name: Test repo
     runs-on: ubuntu-latest
     steps:
-
-    - name: Set up Go 1.13
+    - name: Set up Go 1.14
       uses: actions/setup-go@v1
       with:
-        go-version: 1.13
+        go-version: 1.14
       id: go
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-
     - name: Get dependencies
       run: |
         go get -v -t -d ./...
-
+    - name: Build
+      run: go build example/main.go example/extractor.go
     - name: Run tests
       id: tests
-      env:
-        IN_TRAVIS_CI: yes
-      run: go test -v ./...
-
+      run: |
+        cd example
+        go test -v ./...
