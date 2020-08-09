@@ -62,7 +62,6 @@ func (s *nodeServer) ServeConn(sock transport.Socket) {
 		if err := sock.Recv(&msg); err != nil {
 			return
 		}
-		
 		//as a key to  represent a session.
 		id := sock.Local() + "-" + sock.Remote()
 

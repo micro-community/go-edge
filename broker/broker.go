@@ -20,7 +20,9 @@ var (
 
 // RegisterMessagePublisher creates a new broker status publisher
 func RegisterMessagePublisher(service micro.Service) {
-	eventWorker.publisher = micro.NewPublisher(config.EventPublisherName, service.Client())
+	//eventWorker.publisher = micro.NewPublisher(config.EventPublisherName, service.Client())
+	eventWorker.publisher = micro.NewPublisher(config.EventSubscriberName, service.Client())
+
 }
 
 // RegisterMessageSubscriber creates a new broker status subscriber

@@ -47,6 +47,13 @@ func (e *ProtocolServer) unpackage(buf []byte) (protocolInfo ProtocolPackage, er
 	return protocolInfo, nil
 }
 
+func (e *ProtocolServer) makepackage(protocolInfo ProtocolPackage) (buf []byte, err error) {
+
+	out, _ := xml.MarshalIndent(protocolInfo, "", "  ")
+	xmlheader := []byte(xml.Header)
+	return append(xmlheader, out...), nil
+}
+
 func (e *ProtocolServer) createProtocMsg(protocolInfo ProtocolPackage) (msg protocol.Message) {
 	msg = protocol.Message{
 		Ver:     protocolInfo.Version,
@@ -73,6 +80,9 @@ func (e *ProtocolServer) Event(ctx context.Context, req *codec.Message, resp *co
 	}
 
 	//rpc proto.NewProtocolService()
+	replybuf, err := e.makepackage(ProtocolPackage)
+
+	resp.Body = replybuf
 
 	//make the protocol.message
 	buf := e.createProtocMsg(ProtocolPackage)

@@ -11,13 +11,13 @@ import (
 type Protocol struct{}
 
 func (e *Protocol) Handle(ctx context.Context, msg *protocol.Message) error {
-	log.Info("Handler Received message: ", msg)
+	log.Info("[broker] Handler Received message: ", msg)
 
 	return nil
 }
 
 func Handler(ctx context.Context, msg *protocol.Message) error {
-	log.Info("Function Received message: ", msg)
+	log.Info("[broker] Function Received message: ", msg)
 
 	return nil
 }
