@@ -22,7 +22,7 @@ jobs:
      steps:
        - uses: actions/checkout@v2
          name: Check out repository
-       - uses: elgohr/Publish-Docker-Github-Action@2.12
+       - uses: elgohr/Publish-Docker-Github-Action@v5
          name: Build and Push Docker Image
          with:
            name: micro-community/x-edge
